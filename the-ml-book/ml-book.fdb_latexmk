@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1718729733.22208 "/Users/philiphan/Documents/GitHub/ml-playground/the-ml-book/ml-book.tex" "ml-book.pdf" "ml-book" 1718729733.55823 0
-  "/Users/philiphan/Documents/GitHub/ml-playground/the-ml-book/ml-book.tex" 1718729733.02826 212 166715fba7efdcc421bcb07b3fc4c0d2 ""
+["pdflatex"] 1718729792.36593 "/Users/philiphan/Documents/GitHub/ml-playground/the-ml-book/ml-book.tex" "ml-book.pdf" "ml-book" 1718729792.67879 0
+  "/Users/philiphan/Documents/GitHub/ml-playground/the-ml-book/ml-book.tex" 1718729771.11137 212 166715fba7efdcc421bcb07b3fc4c0d2 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm" 1136768653 1524 4414a8315f39513458b80dfc63bff03a ""
@@ -33,8 +33,8 @@
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1718726744.57908 5467645 128b85b7cde5f5edc5cb7f1dd7ff8736 ""
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1718726728 8221428 d8b59d57529b14a716d06cd8b24bac9e ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "ml-book.aux" 1718729733.53598 132 becad25d16353fbd81e5644d2e8bca32 "pdflatex"
-  "ml-book.tex" 1718729733.02826 212 166715fba7efdcc421bcb07b3fc4c0d2 ""
+  "ml-book.aux" 1718729792.65398 132 becad25d16353fbd81e5644d2e8bca32 "pdflatex"
+  "ml-book.tex" 1718729771.11137 212 166715fba7efdcc421bcb07b3fc4c0d2 ""
   (generated)
   "ml-book.aux"
   "ml-book.log"
