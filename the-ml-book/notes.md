@@ -237,3 +237,46 @@ L_{w, b} = \prod_{i=1...N}f_{w, b}(x_i)^{y_i} (1-f_{w, b}(x_i))^{(1-y_i)}
 $$
 
 This $f_{w, b}(x_i)^{y_i} (1-f_{w, b}(x_i))^{(1-y_i)}$ just means, $f_{w, b}(x_i)^{y_i}$ if $y_i = 1$ and $(1-f_{w, b}(x_i))$ if $y_i = 0$. Just plug it in for the zero in the exponent.
+
+We use the product operator instead of the sum operator because the likelihood of observing N labels for N examples is the product of the likelihood of each observation, it's like probabilities.
+
+To avoid **numeric overflow**, it more convenient to use the **log-likelihood**. The log-likelihood is defined as follows:
+
+$$
+LogL_{w, b} = \ln(L_{w, b}(x)) = \sum_{i=1}^{N}[y_i\ln f_{w, b}(x) + (1-y_i)\ln (1-f_{w, b}(x))]
+$$
+
+Since the natural log is a strictly increasing fuction, maximizing this function is the same as maximizing the argument that is passed into the function. 
+
+## 3.3 Decision Tree Learning
+
+A **decision tree** is an acyclic **graph** that can be used to make decisions. In each branching node, a specific feature $j$ of the feature vector is used. If the feature is below a threshold, the left branch is followed, otherwise the right branch is followed. If a leaf node is reached, the decision is made as to what class the example belongs. 
+
+### Problem Statement
+
+Similarly, we have a collection of labeled examples: labels are all in the set ${0,1}$. We want to build a decision tree that helps us predict the class a give feature belongs in.
+
+### Solution
+
+We will focus on the ID3 decision tree in this section. The optimization criterion is the average log-likelihood.
+
+Contrary to logistic regression which builds a **parametric model** $f_{w, b}$ by finding an optimized set parameters to the optimization criterion. The ID3 algorithm optimizes it by constructing a **nonparametric model**.
+
+This is how it works. Let $S$ denote a set of labeled examples. I the beginning, the decision tree only has a start node that contains all examples. Sart with a constant model $f_{ID3}^{S} = \frac{1}{|S|}\sum_{(x, y) \in S} y$.
+
+The prediction would be the same for any input $x$. We then search through all features and all thresholds, and split the set $S$ into two subsets: $S_-, S_+$, the first where all features are lower than the threshold, and the second where all features are higher than the threshold. Finally we pick the best values $(j, t)$ to form two new leaf nodes, and recursively run the algorithm.
+
+To evaluate how "good" a split is we evaluate the **entropy**. Entropy is a measure of uncertainty about a random variable. The entropy of a set is given by:
+
+$$
+H(S) = -f^S_{ID3}\ln f^{S}_{ID3} - (1-f^S_{ID3})\ln (1-f^S_{ID3})
+$$
+
+The entropy of a split is $H(S_-, S_+) = \frac{|S_-|}{|S|}H(S_-) + \frac{|S_+|}{|S|}H(S_+)$. So at each step, at each leaf node, we find a split that minimizes the entropy. 
+
+The algorithm stops when:
+- All examples in the lead node are classified correctly by the one-piece model.
+- We cannot find an attribute to split upon.
+- The split reduces the entropy by less than some threshold.
+- The tree reaches some maximum depth.
+
