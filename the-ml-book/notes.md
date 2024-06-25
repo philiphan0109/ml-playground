@@ -212,3 +212,13 @@ Logistic regression is not a regression algorithm, it's a classification algorit
 
 ### Problem Statement
 
+In **logistic regression**, we still want to model $y_i$ as a linear function fo $x_i$, but with a binary $y_i$. This is hard. If we define a negative label as 0 and the positive label as 1, we just need a continuous function with the codomain [0, 1]. If the value returned by the model for a input is closer to 0, then the negative label is assigned to x. A function we can use the is **standard logistic function**, or the **sigmoid**.
+$$
+f(x) = \frac{1}{1+x^{-x}}
+$$
+
+The logistic regression model looks like this:
+$$
+f_{x,b}(x) = \frac{1}{1+e^{-(wx+b)}}
+$$
+
