@@ -173,3 +173,42 @@ A **shallow learning** algorithm learns the parameters of the model directly fro
 
 An exception is the **neural network**, especially those with more than one hidden **layer** between input and output. These are called **deep nueral networks**. In **deep learning** models must tune parameters not directly from the features of the trianing examples, but from the outputs of proceeding layers. (it's okay to not know this yet)
 
+# Chapter 3: Fundamental Algorithms
+
+## 3.1 Linear Regression
+
+**Linear regression** is a popular regression algorithm that learns a model which is a linear combination of features of the input example.
+
+### Problem Statement
+
+We have a collection of labeled examples, $\{(x_i, y_i)\}^N_{i=1}$, where $N$ is the size of the collection, $x_i$ is the D-dimensional feature vector, and $y_i$ is a real-valued target.
+
+We want to build a model $f_{w, b}(x) = wx + b$. We want to find optimal values $(w^*, b^*)$. The hyperplane in linear regression is chose to be as close to all training examples as possble.
+
+### Solution
+
+To get this latter requirement satisfied, the optimization process includes minimizing the following expression:
+
+$$
+\frac{1}{N}\sum_{i = i...N}(f_{w,b}(x_i) - y_i)^2
+$$
+
+The expression we minimize or maximize is called the **objective function** or an **objective**. The expression $(f_{w,b}(x_i) - y_i)^2$ is called the **loss function**, this specific one is called the **squared error loss**. For machine learning we try to minimize the objective, which is known as the **cost function**. In this example, the cost function is the **empirical risk**, or the average loss.
+
+Different loss functions can work. New loss functions would result in new and innovative model architectures. But, just because it could work in practice, doesn't mean it will perform better in practice.
+
+There are two reasons new models are invented:
+
+1. The new algorithm solves a specific practical problem better than the existing algorithms. 
+2. The new algorithm has better theoretical garuantees on the quality of the model is produces. 
+
+Why use a complicated model when you can use a simple one? Simple models rarely overfit. **Overfitting** is the property of a model such that it performs very well on training examples, but does not perform well on example that haven't been seen by the learning algorithm.
+
+We use the squared difference for two reasons, 1) the loss function is a smooth, differentiable graph, compared to the absolute differences, and 2) it exaggerates larger differences between two points. 
+
+## 3.2 Logistic Regression
+
+Logistic regression is not a regression algorithm, it's a classification algorithm.
+
+### Problem Statement
+
