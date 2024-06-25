@@ -222,3 +222,7 @@ $$
 f_{x,b}(x) = \frac{1}{1+e^{-(wx+b)}}
 $$
 
+How do we find optimal $w, b$? In linear regression we minimized the empirical risk, which was the average squared error loss, which is also known as the **mean sqaured error (MSE)**.
+
+### Solution
+
