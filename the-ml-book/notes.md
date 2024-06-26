@@ -280,3 +280,122 @@ The algorithm stops when:
 - The split reduces the entropy by less than some threshold.
 - The tree reaches some maximum depth.
 
+## 3.4 Support Vector Machine
+
+This has been introduced, so we are just filling in the blanks:
+
+1. What is there's noise in the data and it's almost impossible to perfectly fit a hyperplane?
+2. What is the data cannot be separated using a plane, but only using a higher order polynomial?
+
+We want to remember the following constraints:
+
+$$
+wx_i - b \ge +1 \text{ if } y_i = +1 \\
+wx_i - b \le -1 \text{ if } y_i = -1
+$$
+
+We also want to minimize $||w||$ so that the hyperplane is equally distant from the closest examples f each class. To minimize $||w||$, we can minimize $\frac{1}{2}||w||^2$. So the optimization problem for an SVM is:
+
+$$
+\text{min}\frac{1}{2}||w||^2, \text{ such that } y_i(wx_i - b) \ge 0, i = 1, ..., N.
+$$
+
+### Dealing with Noise
+
+To deal with noise, we introduce the **hinge loss** function: $$\text{max}(0, 1-y_i(wx_i-b))$.
+
+If these constraints are met:
+
+$$
+wx_i - b \ge +1 \text{ if } y_i = +1 \\
+wx_i - b \le -1 \text{ if } y_i = -1
+$$
+
+If $wx_i$ is on the correct side of the decision boundary, the hinge loss is zero. For data on the wrong side of the boundary, the function's valye is proportional to the distance from the decision boundary. The cost function becomes:
+
+$$
+C||w||^2 + \frac{1}{N}\sum^N_{i=1}\text{max}(0, 1-y_i(wx_i - b))
+$$
+
+Where the hyperparameter C determines the tradeoff between increasing the size of the decisio boundary and ensuring that each $x_i$ lies on the correct side of the decision boundary. This value can be found experimentally. 
+
+SVMs with optimize hinge-loss are called sot margin SVMs, while the original formulation is a hard-margin SVM.
+
+As the value of C increases, the second term in the cost function will lose significance. The SVM model tries to find the highest margin by completely ignoring misclassifciation. As C becomes smaller, making classification errors is more costly, and the model tries to minimize the width of the margin to make less mistakes.
+
+### Dealing with Inherernt Non-Linearity
+
+SVMs can also be used on datasets that cannot be separated by a hyperplane in it's original space. But, we can change the space to make the data linearly separable. Using a function to implicitly transform the original space into a higher dimensional space is called the **kernel trick**.
+
+The idea of the kernel trick is to transform two-dimensional data into a linearly separatale n-dimensional data using a specific mapping. However, we don't know what mapping would work for our data.
+
+BUT! we've figured out how to use **kernel functions** to efficiently work in higher dimensional spaces without doing the transformation explicitly - *that's crazy*. Let's see how this works, but we first need to see how the optiization algorithm for SVM finds the optimal values for $w$ and $b$.
+
+You can skip the next few paragraphs if you're weak. The method traditionally used to solve this problem is the method of *Lagrange Multipliers*. The original problem is the same as:
+
+$$
+\max_{\alpha_1...\alpha_n}\sum_{i=1}^N\alpha_i - \frac{1}{2}\sum_{i=1}^{N}\sum_{k=1}^{N}y_i\alpha_i(x_ix_k)y_k\alpha_k
+$$
+
+where $\alpha_i$ are called Lagrange multipliers. THe optimization becomes a quadratic optimization problem - which is easy for computers to do. Please read into Lagrange multipliers if you are interested.
+
+Multiple kernel functions exist, most famous of which is the **RBF kernel**:
+
+$$
+k(x, x') = \exp(\frac{||x-x'||^2}{2\sigma^2})
+$$
+
+where $||x-x'||^2$ is the squared **Euclidean distance** between two features vectors. The feature space fo the RBF kernel has an infinite number of dimensions. By changing the hyperprameter *sigma*, the scientist can choose between getting a smooth or curvy decision boundary.
+
+## 3.5 K-Nearest Neighbors
+
+**k-Nearest Neighbors (kNN)** is a non-parametric learning algorithm. kNN keeps all the training data in memory, it needs it. Once a new, previously unseen examples $x$ comes in, the kNN algorithm finds $k$ training examples closest to $x$ and returns the majority or average label.
+
+The closeness of two examples is given by a distance function. THe euclidean distance is frequently used, another distance is the **cosine similarity**:
+
+$$
+s(x_i, x_k) = \cos((x_i, x_k)) = \frac{\sum^D_{j=1}x_i^{(j)}x_k^{(j)}}{\sqrt{\sum_{j=1}^D(x_i^{()j})^2\sum_{j=1}^D(x_k^{()j})^2}}
+$$
+
+This is the measure of the similarity of the directions of the two vectors. If the two vectors were in the same direction, then the two vectors point in the same direction, and the cosine similarity is 1. Think of it as dot product, over the product of the magnitudes of the vector, you get just the cosine of the angle. Other distances include the Chebychev distance, Mahalanobis distance, and the Hamming distance.
+
+# Chapter 4: Anatomy of a Learning Algorithm
+
+## 4.1 Building Blocks of a Learning Algorithm
+
+Each learning algorithm consists of three parts:
+
+1) a loss function
+2) an optimization criterion based on the loss function
+3) an optimization routine leveraging training data to find a solution that optimizes the criterion
+
+**gradient descent** and **stochastic gradient descent** are two most frequently used algorithms used in cases where the optimization criterion is differentiable.
+
+Gradient descent is a tool for finding the minimum of a function. Gradient descent can be used to find optimal parameters.
+
+## 4.2 Gradient Descent
+
+Welcome to multivariable calculus at the Peddie School! The date is January 12th, 2023. The optimization criterion will include two parameters, $w$ and $b$. The dataset that we will inspect is the relationship between the spending of a radio compay, and the sales of the company, in units sold. 
+
+Let's say we have 200 example pairs. The linear regression model is $f(x) = wx + b$, but we don't know what the optimal values are for the parameters. To do that, we want to find values for $w$ and $b$ that minimizes the sqaured error.
+
+$$
+l = \frac{1}{N}\sum^N_{i=1}(y_i-(wx_i+b))^2
+$$
+
+We need to start by calculating the partial derivative for every parameter:
+
+$$
+\frac{\partial l}{\partial w} = \frac{1}{N}\sum^N_{i=1}-2x_i(y_i-(wx_i+b))\\
+
+\frac{\partial l}{\partial b} = \frac{1}{N}\sum^N_{i=1}-2(y_i-(wx_i))
+$$
+
+Gradient descent proceeds in **epochs**, an epoch is using the training set entirely to update each parameter. In the first epoch, we initialize $w = 0$ and $b = 0$. At each epoch, we update $w$ and $b$ using their partial derivatives. The **learning rate** $\alpha$ controls the size of an update:
+$$
+w = w - \alpha\frac{\partial l}{\partial w} \\
+\text{}\\
+b = b - \alpha\frac{\partial l}{\partial b}
+$$
+
+We subtract a fraction of the fartial derivatives because we want to go in the opposite directions the derivatives point in. The derivatives point in directions of growth, and we want to go the opposite way. 
