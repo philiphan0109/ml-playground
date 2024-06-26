@@ -425,3 +425,6 @@ Some algorithms, like SVMs, allow the user to provide weightings for each cass. 
 Some classification algorithms build the model using the whole dataset at once (decision tree learning, logistic regression, or SVMs). If you have more data, you would have to rebuild the model from scrtch. Other algorithms (Naive Bayes, multilayer perceptron, SGDClassifier/SGDRegressor) can be trained iteratively, one batch at a time. If you have new training data, you can update the model with that data. 
 
 Some algorithms can be used for both classification and regression, such as decision tree learning, SVMs, and kNNs, but not both. 
+
+# Chapter 5: Basic Practice
+
