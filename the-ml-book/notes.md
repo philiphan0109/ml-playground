@@ -399,3 +399,22 @@ b = b - \alpha\frac{\partial l}{\partial b}
 $$
 
 We subtract a fraction of the fartial derivatives because we want to go in the opposite directions the derivatives point in. The derivatives point in directions of growth, and we want to go the opposite way. 
+
+At the next epoch, we recalculate the partial derivatives with the new values of $w$ and $b$. We continue this process until we see that $w$ and $b$ stop changing as much, then we stop.
+
+Gradient descent is slow and is very sensitive to the choice of the learning rate. It's good that we are smart and imrpovements have been made.
+
+**Minibatch stochastic gradient descent** (minibatch SGD) speeds up the computation by approximating the gradient using smaller batches of the training data. SGD has many internal upgrades as well. **Adagrad** is a version of SGD that scaled the learning rate $\alpha$ for each parameter according to the history of gradients. $\alpha$ is reduced for very big gradients and vice-versa. **Momentum** is a method that helps accelerate SGD by orienting the gradient descent in the relevant direction and reducing oscillations. In neural network training, variants of SGD such as **RMSprop** and **Adam** are used. 
+
+These are not machine learning algorithms, but solvers of minimization problems where the function to minimize has a gradient.
+
+## 4.3 How Machine Learning Engineers Work
+
+Unless you are a cool person, you shouldn't write your own machine learning algorithms, but you should know how they work, that's why you're reading this book. 
+
+You use libraries - hopefully you know what that is - most of which are open source. Libraries that are commonly used include PyTorch, Scikit-learn, and Tensorflow.
+
+These libraries make things really, really easy.
+
+## 4.4 Learning Algorithms' Particularities
+
