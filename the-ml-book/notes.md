@@ -418,3 +418,10 @@ These libraries make things really, really easy.
 
 ## 4.4 Learning Algorithms' Particularities
 
+Some algorithms, like decision tree learning, can accept categorical features. If there is a feature "color" that can take values "red", "yellow, or "green" you can keep this feature as is. SVMs, logistic and linear regression, and kNN expect numerical values for all feature. 
+
+Some algorithms, like SVMs, allow the user to provide weightings for each cass. These weightings influence how the decision boundary is drawn. If the weight of some class is high, the learning algorithm will try to not make mistakes when classifying based off of that feture. 
+
+Some classification algorithms build the model using the whole dataset at once (decision tree learning, logistic regression, or SVMs). If you have more data, you would have to rebuild the model from scrtch. Other algorithms (Naive Bayes, multilayer perceptron, SGDClassifier/SGDRegressor) can be trained iteratively, one batch at a time. If you have new training data, you can update the model with that data. 
+
+Some algorithms can be used for both classification and regression, such as decision tree learning, SVMs, and kNNs, but not both. 
