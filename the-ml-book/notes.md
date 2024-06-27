@@ -428,3 +428,15 @@ Some algorithms can be used for both classification and regression, such as deci
 
 # Chapter 5: Basic Practice
 
+There are some issues we need to fix before we implement any of these libraries that make our lives easy. Before that, our lives are hard.
+
+## 5.1 Feature Engineering
+
+Before doing any machine learning project, you need the **dataset** first. The dataset is the collection of **labeled examples** with $N$ **feature vectors**. A feature vector is a $j$ dimensional vector that contains a value that describes the example somehow. That value is a **feature** and is denoted as $x^{(j)}$.
+
+The problem of transforming raw data into a dataset is called **feature engineering**. For example, to transform the logs of user interaction with a computer system, one could create features that contain information about the user and various statistics extracted from the logs. Everything measurabel can be used as a feature. 
+
+You want to create *informative* features. The better a feature is, the higher its *predictive power*. A model has a **low bias** when it predicts the training data well.
+
+### One-Hot Encoding
+
