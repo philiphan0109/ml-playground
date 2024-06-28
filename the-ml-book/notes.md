@@ -440,3 +440,84 @@ You want to create *informative* features. The better a feature is, the higher i
 
 ### One-Hot Encoding
 
+Most learning algorithms only work with numerical feature vectors. If you have categorical features like, "colors" or "day of the week", those can be transformed into binary ones.
+
+If your data has three possible feature "colors" and they are labeled "red", "yellow", and "green", you can transform them into three vectors:
+
+$$
+\text{red} = [1, 0, 0] \\
+\text{yellow} = [0, 1, 0] \\
+\text{gree} = [0, 0, 1] \\
+$$
+
+You increase the dimensionality of the vectors - you shouldn't change them by changing red into 1, yellow into 2, and green into 3, that would imply an order to the features. If the order of a feature's values is not important, using ordered numbers as values is likely to confuse the learning algorithm as it tries to find regularity where there's no one correct answer which can lead to possible overfitting.
+
+### Binning
+
+When you have a numerical feature, but want to convert it to a cateforical one, you can use **binning**. Binning is the process of converting a continuous feature into multiple binary features called bins or buckets, usually based on value range. For age, bins could be from 1-10 years, 11-20 years, etc.. 
+
+Let feature $j = 4$ represent age. By applying binning, we replace this feature with the corresponding bins. Let the three new bins, be added with indices $j = 123$, $j = 124$, $j = 125$ respectively. Now if $x_i^{(4)} = 7$ for some example $x_i$, then we set feature $x_i^{(124)}$ to 1, if $x_i^{(4)} = 13$, thenw e set feature $x_i^{(125)}$ = 1.
+
+In some cases, a carefully desgiend binning can help the learning algorithm use fewer examples, because you are already limiting uncertainty.
+
+### Normalization
+
+**Normalization** is the process of converting an actual range of values which a numerical feature can take, into a standard range of values, typically in the interval $[-1, 1]$ or $[0, 1]$.
+
+For example, supposed the natural range of a particular feature is 350 to 1450. But subtracting 350 from every feature and dividing it by 1450 - 350 = 1100, one can normalize those values into the range $[0, 1]$:
+
+$$
+\bar{x^{(j)}} = \frac{x^{(j)} - min^{(j)}}{max^{(j)} - min^{(j)}}
+$$
+
+You don't have to normalize your data. But it can help increase the speed of learning. It would improve the scale of the gradient during gradient descent, especially if the features are not on the same scale. If one feature is in the range $[0, 1000]$ and the other is in $[0, 0.01]$, then the derivative with respect to a larger input feature would dominate the learning algorithm. This also helps to avoid **numeric overflow** where numbers get too big for computers to handle.
+
+### Standardization
+
+**Standardization** or **z-score normalization** is a rescaling process so that they have the properties of a standard normal distribution with $\mu = 0$ and $\sigma = 1$ where $\mu$ is the mean of the dataset and $\sigma$ is the stardard deviation from the mean.
+
+Standard scores of features are calculated as follows:
+
+$$
+\hat{x^{(j)}} = \frac{x^{(j)} - \mu^{(j)}}{\sigma^{(j)}}
+$$
+
+There's no definitive answer as to whether you should use normalization or standardization. Unsupervised learning algorithms usually perform faster from standardization. Standardization is also preferred if the data already takes a normal distribution. Standardization is also preferred if features can have extremely high or extremely low values, because normalized values will squeeze the values into a tight range.
+
+Every other time, use normalization.
+
+### Dealing with Missing Features
+
+Sometimes, you'll have data in the form of a dataset that already has features defined. Sometimes, values for some features can be missing or incomplete. This is what you can do:
+
+- Remove the incomplete examples from your dataset - if your dataset is large enough
+- Using a learning algorithm that can deal with missing feature values 
+- Use a **data imputation** technique
+
+### Data Imputation Techniques
+
+One data imputation technique consists in replacing the missing value of a feature by an average value of this feature in the dataset.
+
+Another technique is to replace the missing value with a value outside the normal range of values. FOr example, if the normal range is $[0,1]$ then you can set the missing value to 2. The idea is that the learning algorithm will learn what to do when the feature has a value that is very different from regular values.
+
+Or you can replace the value with a value that is the in the middle of the range, the idea is that the value in the middle will not signiicantly affect the prediction.
+
+A more advanced technique is the use the missing value as a target variable as a regression problem. You can use the remaining features to form the feature vector, and predict the missing value. 
+
+Lastly, if you have a large enough dataset, you can add a dimension to each feature vector, adding a binary indicator feature for each feature with the missing value. 
+
+You should always use data imputation to clean up your data. Try several techniques, some might work better than others.
+
+## 5.2 Learning Algorithm Selection
+
+Choosing a machine learning algorithm can be hard, arguably the hardest task in this process. You can ask questions about your problem and about your data before starting to work on the problem.
+
+- Explainability: Does you model have to be explainable to a non-technical audience? Most very accurate algorithms are black boxes. They learn models that make very very few errors, but why a model makes a specific prediction could be very hard to understand and even harder to explain. Nueral networks often have this issue.
+
+kNNs, linear regression, or decision tree learning produce models that aren't super accurate, but are easily explained.
+
+- In-memory vs. out-of-memory: Can your dataset be fully loaded into the RAM of your system? If yes, then you can choose almost all algorithms. Else, you would prefer **incremental learning algorithms** that improves the learning algorithm gradually with data. 
+
+- Number of features and examples: How many training examples do you have? How many feature does each example have? **Neural networks** and **gradient boosting** can handle a huge number of examples and millions of features. SVMs on the other hand, can't do that.
+
+- Categorical vs. numerical features: 
