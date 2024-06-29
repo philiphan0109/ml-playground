@@ -677,3 +677,32 @@ The bayesian technique differs from the random or grid search in that they use p
 
 ### Cross-Validation
 
+If you have a large validation set, you can use **cross-validation**. When you have limited training examples, it could be a detriment to both the training and validation sets. You want to use more data to train the model - you can split your data into training and test, and use the full training set to simulate a validation set. 
+
+The algorithm works as follows. First you fix the values of the hyperparameters you want to evaluate. Then you split your training set into severl subsets of the same size. Each subset is called a **fold**. With five-fold cross validation, you randoml split your training data into five folds: ${F_1, F_2, F_3, F_4, F_5}$. Then you train five models. To train the first model, $f_1$, you use all examples from folds $F_2, F_3, F_4, F_5$ and set the examples from $F_1$ to be the validation set. to train $f_1$, you use all examples from folds $F_1, F_3, F_4, F_5$ and set the examples from $F_2$ to be the validation set. 
+
+Continue to build these models, and compute the value of the metric of interest on each validation set, and then average that to get the final value.
+
+# Chapter 6: Neural Networks and Deep Learning
+
+A neural network is a logistic regression model, a generalization for multiclass classification is called the softmax regressor model, and is standard in most neural networks.
+
+## 6.1 Neural Networks
+
+A **neural network** (NN) just like any other model, is a mathematical function:
+$$
+y = f_{NN}(x)
+$$
+
+The function$f_{NN}$ has a particular form: it's a **nested function**. Neural networks have **layers**. A network that has three layers can look like this:
+$$
+y = f_{NN} = f_3(f_2(f_1(x)))
+$$
+
+In the equation above, $f_1$ and $f_2$ are vector functions in the form:
+$$
+f_l(x) = g_l(W_lx+b_l)
+$$
+where $l$ is the layer index. The function $g_l$ is called the **activation function**. It's a fixed function chosen by the user before the learning is started. The parameters $W_l$ (matrix) and $b_l$ (vector) for each layer is learned using gradient descent optimization depending on the task, on a particular loss function. If you replace ${g_l}$ with the sigmoid function, it's is identical to logistic regression.
+
+$g_l$ is a vector function, Each row of $W_l$ is a vector the same dimensionality as the vector $x$. The output of $f_1(x)$ is a vector, where $g_l$ is some scalar function. To make this more clear, let's consider one architecture of neural networks, called **multilayer perceptron** and is usually called a **vanilla neural network**. 
