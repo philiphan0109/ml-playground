@@ -550,3 +550,5 @@ A perfect model would have no **bias**. A model with low bias means that it pred
 - your model is too simple of the data
 - your features are not informative enough
 
+For the first problem, if your data resembles a curved line, but your model is a straight line, it's simplicity holds it back from being able to learn the extra complexity present in the data. For the second problem, take the example of predicting cancer, but all you have is the height and weight of an individual - not super helpful.
+
