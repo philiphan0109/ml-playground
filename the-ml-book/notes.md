@@ -705,4 +705,19 @@ f_l(x) = g_l(W_lx+b_l)
 $$
 where $l$ is the layer index. The function $g_l$ is called the **activation function**. It's a fixed function chosen by the user before the learning is started. The parameters $W_l$ (matrix) and $b_l$ (vector) for each layer is learned using gradient descent optimization depending on the task, on a particular loss function. If you replace ${g_l}$ with the sigmoid function, it's is identical to logistic regression.
 
-$g_l$ is a vector function, Each row of $W_l$ is a vector the same dimensionality as the vector $x$. The output of $f_1(x)$ is a vector, where $g_l$ is some scalar function. To make this more clear, let's consider one architecture of neural networks, called **multilayer perceptron** and is usually called a **vanilla neural network**. 
+$g_l$ is a vector function, Each row of $W_l$ is a vector the same dimensionality as the vector $x$. The output of $f_1(x)$ is a vector, where $g_l$ is some scalar function. To make this more clear, let's consider one architecture of neural networks, called **multilayer perceptron** and is usually called a **vanilla neural network**.
+
+### Multilayer Perceptron Example
+
+Let's take a look at a particular configuration of neural networks called **feed-forward neural networks**, and more specifically the **multilayer perceptron**. Let's consider an MLP with three layers. The networks takes a two-dimensional feature vector and outputs a number. This FFNN can be for a regression or classification depending on the activation functions used in the third output layer.
+
+The neural network is represented as a connected combination of **units**, organized into **layers**. Each unit is represented graphically by a circle or a rectangle. In each unit, all the inputs of the unit are joined together to form an input vector. Then the unit applies a linear transformation to the input vector. The the function applies an activationg function $g$ to the result of the linear transformation and obtains the output value, a real number. 
+
+In multilayer perceptron, all outputs of one layer are connected to each input of the succeeding layer. This architecture is called **fully-connected**. A neural network can contain **fully connected layers**. 
+
+### Feed-Forward Neural Network Architecture
+
+If we want to solve a regression or classification problem, the last layer of a neural network will contain one unit. If the activation function of the last unit is linear, the nueral network is a regression model. If the last activation function is a logistic function, the neural network is a classification model.
+
+Any activation function can be chosen, but being differentiable is nice. The main purpose of having non-linear components in the function $f_{NN}$ is to allow the neural network to approximate non linear functions. Without then, neural networks would bel inear, no matter how many layers it has. 
+
