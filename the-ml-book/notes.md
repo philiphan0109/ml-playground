@@ -514,10 +514,39 @@ Choosing a machine learning algorithm can be hard, arguably the hardest task in 
 
 - Explainability: Does you model have to be explainable to a non-technical audience? Most very accurate algorithms are black boxes. They learn models that make very very few errors, but why a model makes a specific prediction could be very hard to understand and even harder to explain. Nueral networks often have this issue.
 
-kNNs, linear regression, or decision tree learning produce models that aren't super accurate, but are easily explained.
+    kNNs, linear regression, or decision tree learning produce models that aren't super accurate, but are easily explained.
 
 - In-memory vs. out-of-memory: Can your dataset be fully loaded into the RAM of your system? If yes, then you can choose almost all algorithms. Else, you would prefer **incremental learning algorithms** that improves the learning algorithm gradually with data. 
 
 - Number of features and examples: How many training examples do you have? How many feature does each example have? **Neural networks** and **gradient boosting** can handle a huge number of examples and millions of features. SVMs on the other hand, can't do that.
 
-- Categorical vs. numerical features: 
+- Categorical vs. numerical features: Does your data have categorical or numerical features? or both? Depending on your answer, you need different algorithms.
+
+- Nonlinearity of the data: Is your data linearly separable or can it be modeled using a linear model? If yes, SVM with the linear kernel, logistic or linear regression can be good choices. Or else you're going to need a deep neural network.
+
+- Training speed: How much time do you have for training the model, you're going to make mistakes, so make sure you know. Neural networks are going to be slow. Simpler algorithms are going to be faster. 
+
+- Prediciton speed: How fast does the model have to be whne generating predictions? Is it going to be in high production? SVMs, regression, and some neural networks are extremely fast, whereas kNN, ensemble algorithms, and very very deep neural netowrks can take more time.
+
+## 5.3 Three Sets
+
+In practice, users work with three distinct sets of labeled examples:
+
+1. training set
+2. validation set
+3. test set
+
+Once you have your annotated dataset, the first thing you do is shuffle your examples and split them into three subsets: **training, validation** and **test**. The training set should be the biggest one, the one you use to build the model. The validation and test sets should be around the same size, much smaller than the training set. The model should not see the two latter sets during learning. These sets are called **holdout sets**. 
+
+When we build a model, what we don't want is for themodel to only do well at predicting the examples that the learning algorithm has already seen. Assume there's a learning algorithm that just memorizes all training examples and then uses memory to predict their labels. This algorithm will make no mistakes during training, but would be useless in the practical world.
+
+What you want is a model that is good at predicting exampels that the learning algorithm didn't see: you want high performance on holdout sets.
+
+What's the difference between the validation set and the test set? We use the validation set to 1) choose the learning algorithm and 2) find the best values of the hyperparameters. The test set is used to asses the model before putting it in production.
+
+## 5.4 Underfitting and Overfitting
+
+A perfect model would have no **bias**. A model with low bias means that it predicts the labels of the training data well. If the model makes any mistakes on the training data, it has a **high bias** and the model **underfits**. Underfitting is the inability of the model to predict the labels of the data it was trained on well. There are two important reasons for this:
+- your model is too simple of the data
+- your features are not informative enough
+
