@@ -552,3 +552,43 @@ A perfect model would have no **bias**. A model with low bias means that it pred
 
 For the first problem, if your data resembles a curved line, but your model is a straight line, it's simplicity holds it back from being able to learn the extra complexity present in the data. For the second problem, take the example of predicting cancer, but all you have is the height and weight of an individual - not super helpful.
 
+To solve underfitting - find a more complex model, or get more informative features.
+
+**Overfitting** on the other hand, is when the model predicts very well on the training data, but poorly on the holdout sets. Two important factors that can lead to overfitting is:
+- your model is too complex for the data
+- there are two many features but not many training examples
+
+Overfitting is also called **high variance**. This means that is your training data was sampled differently, your model would produce a dramatically different model. 
+
+Even a simple model, like a linear model, can overfit the data. This happens when the data is high-dimensional and there are not alot of training examples. When feature vectors are high-dimensional, linear learning algorithms can assign non-zero value to all parameters in the parameter vector $w$. It's trying too hard to find complex relationships between all available features to predict the labels perfectly. 
+
+A complex model on the other hand, also has a high risk of overfitting. It tries to percfectly predict the labels of all training examples, and will learn the specifics of each set: the noise, the sampling, and other features that don't really matter. 
+
+To solve overfitting - try a simpler model, reduce the dimensionality of your data, add more training data examples, or *regularize* the model.
+
+## 5.5 Regularization
+
+**Regularization** is an umbrella term that includes methods that force the learning algorithm to build a less complex model. This leads to higher bias but less variance, this is the **bias-variance tradeoff**.
+
+The most common regularization are called **L1** and **L2 regularization**. To create a regularized model, we change the objective function by adding a penalizing term that is high when the model is complex. Let's use linear regression for an example:
+$$
+\min_{w, b}\frac{1}{N}\sum^N_{i=1}(f_{w, b}(x_i) - y_i)^2
+$$
+
+An L1 regularized objective function looks like this:
+
+$$
+\min_{w, b}[C|w| + \frac{1}{N}\sum^N_{i=1}(f_{w, b}(x_i) - y_i)^2]
+$$
+
+where $|w| = \sum^D_{j=1}|w^{(j)}|$ and $C$ is a hyperparameter. The higher the value for $C$ is, the learning algoithm will try to set most $w^{(j)}$ to a small value or zero to minimize the objective. But this can lead to underfitting, so the task is to find the highest $C$ value that will not lead to underfitting.
+
+An L2 regularized objective looks like this:
+$$
+\min_{w, b}[C||w||^2 + \frac{1}{N}\sum^N_{i=1}(f_{w, b}(x_i) - y_i)^2], \text{ where } ||w||^2 = \sum^D_{j = 1}(w^{(j)})^2
+$$
+
+In practice, L1 regularization produces a **sparse model**, where most of the parameters are close to zero. L1 performs **feature selection** by deciding which features are the most important for prediction. However, L2 maximizes the performance of the model on holdout data. It has the advantage of being differentiable, so gradient descent can be used to optimize the objective function.
+
+L1 and L2 regularization is also combined in **elastic net regularization**. L2 is called **ridge regularization** and L1 is called **lasso regularization**.
+
