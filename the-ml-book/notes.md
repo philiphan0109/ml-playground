@@ -721,3 +721,23 @@ If we want to solve a regression or classification problem, the last layer of a 
 
 Any activation function can be chosen, but being differentiable is nice. The main purpose of having non-linear components in the function $f_{NN}$ is to allow the neural network to approximate non linear functions. Without then, neural networks would bel inear, no matter how many layers it has. 
 
+Other popular activation functions include the logistic function, and the **TanH** (hyperbolic tangent) and **ReLU** (rectified linear unit).
+$$
+tanh(z) = \frac{e^z-e^{-z}}{e^z+e^{-z}} \\
+\text{}\\
+relu(z) = 
+\begin{cases} 
+0 & \text{if } z < 0 \\
+z & \text{otherwise} 
+\end{cases}
+$$
+
+In matrix $W_l$, each row $u$ corresponds to a vector of parameters $W_{l, u}$. The dimensionality of the vectr $w_{l, u}$ equals the number of units in the later $l-1$. The operation $W_lz$ results in a vector $a_l = [w_{l,1}z, w_{l,2}z, w_{l,3}z, ..., w_{l,size}z]$. The sum $a_l + b_l$ return a size($l$) dimensional vector $c_l$. Finally, the function $g_l(c_l)$ produces the vector $y_l$ as the output. Don't worry if this is hard to follow, it's supposed to be.
+
+## 6.2 Deep Learning
+
+**Deep learning** refers to training neural networks with more than two non-output layers. The two largest issues in deep learning were **exploding gradients** and **vanishing gradients** as gradient descent was used. 
+
+While the problem of exploding gradient can be solved through **gradient clipping** and regularization, the vanishing gradient issue remained.
+
+What is vanishign gradient? To update the values of the parameters in neural networks, **backpropogation** is used. 
