@@ -740,4 +740,52 @@ In matrix $W_l$, each row $u$ corresponds to a vector of parameters $W_{l, u}$. 
 
 While the problem of exploding gradient can be solved through **gradient clipping** and regularization, the vanishing gradient issue remained.
 
-What is vanishign gradient? To update the values of the parameters in neural networks, **backpropogation** is used. 
+What is vanishign gradient? To update the values of the parameters in neural networks, **backpropogation** is used. It's a fast algorithm for computing gradients on neural networks using the chain rule. During gradient descent, the neural network's parameters recieve an update proportional to the partial derivative of the cost function with repsect to the current parameter in each iteration. Sometimes, the gradient will be vanishingly small, effectively preventing parameters from being updated at all. This may completely stop the neural network from training.
+
+Traditional activation functions, such as the hyperbolic tangent have gradients in the range $(0,1)$ and backpropagation computes gradients by the chain rule. That has the effect of multiplying $n$ of these small numbers to compute gradients of the earlier layers. The gradients decrease exponentially with $n$ in an $n$-layer network. The earlier layers would train very slowly, if at all.
+
+However, the modern implementations of neural network learning algorithms allow you to train very deep neural networks. This is due to many improvements, including ReLU, LSTM, as well as techniques including **skip connections** used in **residual neural networks**.
+
+The term deep learning today refers to training neural networks using the modern algorithmic and mathematical toolkit, regardless of how deep a network really is. The layers that are neither input nor output are often called **hidden layers**.
+
+### Convolutional Neural Network
+
+The number of parameters in an MLP can grow very fast as you make the network bigger. Optimizing a large model is very computationally intensive. 
+
+When dealing with images, the input is very high dinensional. Classifying images with an MLP is virtually impossible. A **convolutional neural network** is a special kind of FFNN that significantly reduces the number of parameters in a deep neural network with many units without losing too much quality of the model. 
+
+Let's consider image processing throughout this section. In images, pizels that are close to one another usually represent the same kind of information: sky, water, leaves, fur, etc. The exceptions: edges. The parts of an image where two different object "touch" one another. 
+
+If a neural network can recognize regions of the same information and the edges, this would allow the network to predict the object represented in the image.
+
+We can split the image into square patches, using a moving window approach. We can then use this information to train multiple smaller regrssion models at once, each smaller regression model will learn to detect the sky, the grass, or the building, so on. In CNNs, a small regression model only has one layer. To detect patterns, the small regression model has to learn the parameters of a matrix **F** (filer) of size $p\times p $, where $p$ is the size of a patch.
+
+Let's assume the input image is black and white, with 1 representing blakc pixels, and 0 representing white pixels. Assuming that the patches are 3 by 3 pixels, a patch $P$ could look like this:
+$$
+P = \begin{bmatrix}
+0 & 1 & 0\\
+1 & 1 & 1\\
+0 & 1 & 0
+\end{bmatrix}
+$$
+
+the patch above has a cross, and a smaller regression model would detect that. If we calculate the **convolution** of matrices $P$ and $F$, the value we obtains is higher the more similar $F$ is to $P$. Assume that $F$ looks like this:
+
+$$
+F = \begin{bmatrix}
+0 & 2 & 3\\
+2 & 4 & 1\\
+0 & 3 & 0
+\end{bmatrix}
+$$
+
+I would recommend looking up the convolution calculation, but it is the sum of the element-wise products of the two matrices. So the convolution of $P$ and $F$ would be 12. If we were looking at a different path, say one with the shape of the letter L:
+
+$$
+P = \begin{bmatrix}
+1 & 0 & 0\\
+1 & 0 & 0\\
+1 & 1 & 1
+\end{bmatrix}
+$$
+
