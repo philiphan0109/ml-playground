@@ -592,3 +592,88 @@ In practice, L1 regularization produces a **sparse model**, where most of the pa
 
 L1 and L2 regularization is also combined in **elastic net regularization**. L2 is called **ridge regularization** and L1 is called **lasso regularization**.
 
+Two other common techniques for regularization for neural networks are **dropout** and **batch normalization**. Non-mathematical methods also include **data augmentation** and **early stopping**.
+
+## 5.6 Model Performance
+
+How do you tell how well a model performs? You use the test set to assess the model. If the model performs well on the test set, data it's never seen before, we say that it **generalizes well**.
+
+Formal metrics and tools are used to assess the model performcance. For regression, a well-fitting regression model reuslts in predicted values close to the observed values. A **mean model** which always predicts the average of the labels in the training data, is a baseline to compare to. Good models will outperform the mean model.
+
+Then, we can look at the mean squared error of the data. If the MSE of the model on the test set is significantly higher that the MSE obtained on the trianing data, this is a sign of overfitting. Obviously, MSE isn't the only way to tell how well a model performs.
+
+For classification here are some of the things we can do:
+- confusion matrix
+- accuracy
+- cost-sensitive accuracy
+- precision & recall & area under ROC curve
+
+### Confusion Matrix
+
+The **confusion matrix** is a table that summarizes how successful a classifcation model is at predicting examples. The two axes of the confusion matrix is the label that the model predicted, and the actual label of the data. Let's take categorizing spam emails as an email. The confusion matrix counts **true positives**, the number of spam emails classified as spam emails, **false negatives**, the number of spam emails classified as non-spam emails (incorrectly predicting the negative class), **true negatives** the number of non-spam emails classified as non-spam emails, and **false positives** non-spam emails classified as spam emails (incorrectly predicting the positive class).
+
+The confusion matrix is used to calculate **precision** and **recall**.
+
+### Precision & Recall
+
+**Precision** and **recall** are the two most commonly used metrics to assess model performance when applicable. Precision is the ratio of correct positive predicitons to the overall number of positive predictions:
+$$
+\text{precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+$$
+Recall is the ratio of correct positive predictions to the overall number of positive examples in the dataset:
+$$
+\text{recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+$$
+
+Let's take a document retrieval task with a query. The precision is the proportion of relevant documents in the list of all returned documents by the model. The recall si the ratio of the relevant documents returned by the model to the total number of relevant documents that exists - regardless of whether or not they were retrieved.
+
+For spam detection, we want to have high precision, and not miscategorize a non-spam email as a spam email, and can tolerate low recall, because it's fine if some spam makes it into the inbox. It's usually imposible to have both.
+
+To extend this to multiclass prediction, you can only calculate precision and recall on one class, and assume the other classes to be negatives.
+
+### Accuracy
+
+**Accuracy is the number of correctly classified examples (TP & TN), divided by the total number of classified examples:
+$$
+\text{accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FN} + \text{FP}}
+$$
+
+Accuracy is good when you want to be able to predict all classes well.
+
+### Cost-Sensitive Accuracy
+
+When classes have different importance, we can use **cost-sensitive accuracy**. To compute this, assign a cost (positive real number) to both types of mistakes: false positives, and false negatives. When calculating the new accuracy, multiply the FPs and FNs by that coefficient cost.
+
+### Area under the ROC Curve (AUC)
+
+The ROC Curve is the "reciever operating characteristic" curve and is used to assess the performance of classification models. The ROC curves uses the **true positive rate**, which is given in recall, and the **false positive rate** (proportional of negative examples predicted incorrectly).
+$$
+\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}} \text{ and } \text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}
+$$
+
+ROC Curves can only be used to assess classifiers that return some confidence score for prediction. To draw the curve, you first discretize the range of confidence scores: [0, 0.1, 0.2, 0.3, 0.4, 0.5, ...]. Then you can use each discrete value as the prediction threshold and predict the labels of examples in your dataset using the model and this threshold. Example: you want to compute TPR and FPR for the threshold equal to 0.7, you apply the model to each example, get the score, and if the score is higher than 0.7 you predict the positive class.
+
+The higher the **area under the ROC curve**, the better the classifier. A classifier with an AUC higher than 0.5 is better than a random classifier.
+
+## 5.7 Hyperparameter Tuning
+
+When making a model, we need to find optimal hyperparameters for the model. 
+
+Hyperparameters aren't optimized by the learning algorithm itself. You have to experimentally determine the best value yourself. If you have enough data in your validation set, you can perform **grid search**.
+
+Grid search is the most simple **hyperparameter tuning** technique. Imagine you are training an SVM and there are two hyperparameters: the penalty parameter $C$ and the kernel, either "linear" or "rbf".
+
+You can start with a logarithmic scale for C to start with, then narrow your search down: [0.001, 0.01, 0.1, 1, 10, 100, 1000]. In this case, there are $7 \times 2$ combinations of hyperparameters to test, I hope you can see why. 
+
+You have to train 14 models, one for each combination of hyperparameters, then assess the performance of each. When one model outperforms the other, you can narrow down your search, and repeat the same process.
+
+This can be time consuming, for very large models and datasets. **Random search** and **Bayesian hyperparameter optimization**. 
+
+In random search, you no longer has a discrete set of values to explore for each hyperparameter. Instead, you provide a statistical distribution for each hyperparameter from which values are randomly sampled and set the total number of combinations you want to try.
+
+The bayesian technique differs from the random or grid search in that they use past evaluation to choose the next values to test. It limits the number of optimizations of the objective function by choosing new values from values that have done well in the past.
+
+**Gradient-based techniques** and **evolutionary optimization techniques** are also popular, but too advanced to explain here.
+
+### Cross-Validation
+
