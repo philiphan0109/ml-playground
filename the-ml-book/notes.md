@@ -811,3 +811,14 @@ Pooling usually contributes to an increased accuracy of the model. It improves t
 
 ### Recurrent Neural Network
 
+**Recurrent Neural Networks** (RNNs) are used to label, classify, or generate sequences. A sequence is a matrix each row of which is a feture vector and the order of rows matter. Labelling a sequence is to predict a class for each feature vector in a sequnce. To classify a sequence is to predict a class for the entire sequence. To generate a sequence is to output another sequence somehow related to the input sequence.
+
+RNNs are used in text processing because sentences are naturally sequences of words and charaters. 
+
+A recurrent neural network is nor feed-forward: it contains loops. The idea is that each unit $u$ of a recurrent layer $l$ has a real-vlued **state** $h_{l, u}$. The state can be seen as the memory of the unit. In RNNs, each unit $u$ recieves two inputs: a vector of states from the previous layer, and the vector of states from the same layer from the *previous time step*. 
+
+Let's break this down. Consider the first two layers of a trivial RNN. The first layer recieves a feature vector as input. The second layer recieves the output of the first layer as the input. Pretty simple.
+
+Each training example is a matrix in which each row is a feature vector. Let's illustrate this matrix as a sequence of vectors $X = [x^1, x^2, ..., x^{t-1}, x^{t}, x^{t+1}, ... x^{length x}]$ where $length x$ is the length of the input sequence. If our input is a text sentence, then the feature vector $x^t$ for each $t = 1, ..., length x$ represents a word at position $t$.
+
+The feature vectors from an input example are "read" by the neural network sequentially i the order of the timesteps. The index $t$ denotes a timestep. To update the state $h^t_{l, u}$, at each timestep $t$ in each unit $u$ of layer $l$, we first calculate a linear combination of the input feature vector with the state vector $h^{t-1}_{l, u}$.
