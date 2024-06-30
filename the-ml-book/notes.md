@@ -789,3 +789,8 @@ P = \begin{bmatrix}
 \end{bmatrix}
 $$
 
+then the convolution with $F$ would be 5, a significantly lower result. There is also a bias parameter $b$ associate with each filter $F$ which is added to the result of a convolution before the activation function.
+
+One layer of a CNN consists of multiple convolution filters - just like one layer in a vanilla FFNN consists of multiple units. The filter matrix, also commonly called the **kernel** and bias values are trainable paramters that are optimized using gradient descent with backpropagation.
+
+A nonlinearity, as mentioned before, is applied to the sum of the convolution and bias terms. Since we can have $size_l$ filters in each layer $l$, the output of the convolutional layer $l$ would consists of $size_l$ matrices. This sounds confusing, but if you read through it again, it'll make sense.
