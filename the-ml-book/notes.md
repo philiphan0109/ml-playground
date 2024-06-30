@@ -797,5 +797,17 @@ A nonlinearity, as mentioned before, is applied to the sum of the convolution an
 
 If the CNN has one convolution layer following another convolution layer, then the subsequent layer $l+1$ treats the output of the preceding layer $l$ as a collection of $size_l$ images. This collection of images (matrices) is called a **volume**. The size of that collection is called the volume's **depth**. Every filter of layer $l+1$ convolves the *entire* volume. The patch of a volume is just the sum of the convolutions of the corresponding patches of the individual matrices that make up the volume.
 
-CNNs actually usually get volumes as an input, as an image is decomposed into three channelsL: R, G, and B, each channel being a monochrome image.
+CNNs actually usually get volumes as an input, as an image is decomposed into three channelsL: R, G, and B, each channel being a monochrome image. Images can start as volumes of depth 3.
+
+Two important properies of convolution are **stride** and **padding**. Stride is the step size of the moving window. If the stride is 1, the filter slides from right and to the bottom by one cell at a time. The output matrix is smaller when the stride is larger.
+
+Padding allows getting a larger output matrix, it's the width of the square of additional cells that surround the image before it's convolved with the filter. The cells that are a part of padding usually have a value of zero. Padding is helpful with larger filters because it allows them to scan the boundaries (corners and edges) of the image.
+
+**Pooling** is essential to CNNs. Pooling works in a way similar to a convolution, as a filter applied using a moving window approach. But instead of applying a trainable filter to an input matrix or a volume, pooling layers apply a fixed operator, usually the max or the average. Pooling also has hyperparameters: the size of the filter and the stride. 
+
+A pooling layer usually follows a convolution layer, and it gets the output of convolutions as an input. When pooling is applied to a volume, each matrix in the volume is processed independently of others. Therefore, the output of a pooling layer applied to a volume is a volume the same depth as the input.
+
+Pooling usually contributes to an increased accuracy of the model. It improves the training speed of the model by reducing the number of parameters in the neural network.
+
+### Recurrent Neural Network
 
