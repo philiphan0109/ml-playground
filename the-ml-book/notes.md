@@ -794,3 +794,8 @@ then the convolution with $F$ would be 5, a significantly lower result. There is
 One layer of a CNN consists of multiple convolution filters - just like one layer in a vanilla FFNN consists of multiple units. The filter matrix, also commonly called the **kernel** and bias values are trainable paramters that are optimized using gradient descent with backpropagation.
 
 A nonlinearity, as mentioned before, is applied to the sum of the convolution and bias terms. Since we can have $size_l$ filters in each layer $l$, the output of the convolutional layer $l$ would consists of $size_l$ matrices. This sounds confusing, but if you read through it again, it'll make sense.
+
+If the CNN has one convolution layer following another convolution layer, then the subsequent layer $l+1$ treats the output of the preceding layer $l$ as a collection of $size_l$ images. This collection of images (matrices) is called a **volume**. The size of that collection is called the volume's **depth**. Every filter of layer $l+1$ convolves the *entire* volume. The patch of a volume is just the sum of the convolutions of the corresponding patches of the individual matrices that make up the volume.
+
+CNNs actually usually get volumes as an input, as an image is decomposed into three channelsL: R, G, and B, each channel being a monochrome image.
+
