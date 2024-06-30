@@ -821,4 +821,45 @@ Let's break this down. Consider the first two layers of a trivial RNN. The first
 
 Each training example is a matrix in which each row is a feature vector. Let's illustrate this matrix as a sequence of vectors $X = [x^1, x^2, ..., x^{t-1}, x^{t}, x^{t+1}, ... x^{length x}]$ where $length x$ is the length of the input sequence. If our input is a text sentence, then the feature vector $x^t$ for each $t = 1, ..., length x$ represents a word at position $t$.
 
-The feature vectors from an input example are "read" by the neural network sequentially i the order of the timesteps. The index $t$ denotes a timestep. To update the state $h^t_{l, u}$, at each timestep $t$ in each unit $u$ of layer $l$, we first calculate a linear combination of the input feature vector with the state vector $h^{t-1}_{l, u}$.
+The feature vectors from an input example are "read" by the neural network sequentially in the order of the timesteps. The index $t$ denotes a timestep. To update the state $h^t_{l, u}$, at each timestep $t$ in each unit $u$ of layer $l$, we first calculate a linear combination of the input feature vector with the state vector $h^{t-1}_{l, u}$ of the same layer from the previous timestep $t-1$. The linear combination of the two vectors is calculated using the two parameter vectors $w_{l, u}, b_{l, u}$ and a parameter $b_{l, u}$. The value of $h^t_{l, u}$ is then obtained by applying an activation function $g_1$ to the result. The output vector $y^t_l$ is typically a vector calculated for the whole layer $l$ at once. TO obtain the output vector $y$, we use the activation function $g_2$ that takes a vector as input and returns a different vector of the same dimensionality. The function $g_2$ is applied to a linear combination of the state vectors $h^t_{l, u}$ calculated using a parameter matrix $V_l$ and a parameter $c_{l, u}$. In classification a typical choice for $g_2$ is the **softmax function**:
+
+$$
+\sigma{z} = [\sigma^{(1)}, ..., \sigma^{(D)}] \text{ where } \sigma^{(j)} = \frac{\exp(z^{(j)})}{\sum^D_{k=1}\exp(z^{(k)})}
+$$
+
+The softmax function is a generalization of the sigmoid function to multidimensional outputs. 
+
+The dimensionality of $V_l$ is chosen by the user such that the multiplication of $V_l$ with $h^t_l$ results in a vector of the same dimensionality as the vector $c_l$.
+
+The values of $w_{l, u}, u_{l, u}, b_{l, u}, V_{l, u}, and c_{l, u}$ are computing from training data using gradient descent with backpropagation. To train RNN models however, a special version of backpropagation, **backpropagation through time** is used.
+
+Both $tanh$ and $softmax$ summer from teh vanishing gradient problem. Even if our RNN only has one or two reccurent layers. Backpropagation has to unfold over time. The longer the input sequence, the deeper the unfolded network.
+
+RNNs are also not great at capturing long term dependencies. As the lenght of an input sequence ggrows, the feature vectors at the beginning of the sequence begin to be "forgotten", because the state of each unit, which serves as memory, becomes significantly more affected by the feature vectors read more recently. 
+
+The most effective reccurent neural network models used in practie are **gated RNNs**, this includes **long short-term memory** (LSTM) networks and networks based on the **gated reccurent unit** (GRU).
+
+The beauty of using gated RNNs is that such networks can store information in their units for future use, kinda like bits in a computer's memory. The difference with the real memory is that reading, writing, and the erasure of information is controlled by activation functions that take values in the range $(0,1)$. 
+
+The trained neural network can "read" the input sequence of feature vectors and decide at some timestep to remember som information. That information can then be used to process feature vectors towards the end of the sequence. 
+
+Units make decisions about what information to store, and when to allow read, write and erasures. Those decisions are learned from data and implemeneted through the concept of *gates*. A **minimal gated GRU** is a popular example, and contains a memory cell and a forget gate.
+
+Here's the math of a GRU unit on the first layer of an RNN. A minima gated GRU unit $u$ in layer $l$ takes two inputs: the vector of the memory cell values from all units in the same layer from the previous timestep, $h^{t-1}_l$, and a feature vector $x^t$. It then does the following calculations in the order listed:
+$$
+\tilde{h}^t_{l, u} = g_1(w_{l, u}x^t + u_{l, u}h^{t-1}_l+b_{l, u}) \\
+\text{} \\
+\Gamma^t_{l, u} = g_2(m_{l, u}x^t + o_{l, u}h^{t-1}_l+a_{l, u}) \\
+\text{} \\
+\tilde{h}^t_{l, u} = \Gamma^t_{l, u}\tilde{h}^t_{l, u} + (1-\Gamma^t_{l, u})h^{t-1}_l \\
+\text{} \\
+h^{t}_l = [h^{t}_{l, 1}, ..., h^{t}_{l, size}]\\
+\text{} \\
+y^t_l = g_3(V_lh_l^t+c_{l, u})
+$$
+
+where $g_1$ is the $tanh$ function, $g_2$ is the gate function, and is implemented as the sigmoid function taking values in the range $(0,1)$. If the gate function is close to zero, then the memory cell keep sits value from the previous timestep, otherwise the value of the memory vell is overwritten by a new value $\tilde{h}^t_{l, u}$. $g_3$ is usually a $softmax$ function.
+
+A gated unit takes an input and stores it for some time, like the identity function ($f(x) = x$). Because the derivative of the identity function is constant, when a network with gated units is trained with backpropagation through time, the gradient does not vanish.
+
+More popular RNNs include **bi-directional RNNs**, RNNs with **attention**, and **sequence-to-sequence RNNs**. All RNNs can be generalized as a **recursive neural network**.
