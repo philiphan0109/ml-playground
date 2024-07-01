@@ -876,3 +876,24 @@ f(x) = \frac{1}{N}\sum^N_{i=1}w_iy_i, \text{ where } w_i = \frac{Nk(\frac{x_i-x}
 $$
 
 The function $k(z)$ is called the **kernel**. The kernel plays the role of a similarity function: the values of coefficients $w_i$ are higher when $x$ is similar to $x_i$ and lower when they are dissimilar. Kernels can have different forms, the most frequently used one is the Gaussian kernel:
+$$
+k(z) = \frac{1}{\sqrt{2\pi}}\exp(\frac{-z^2}{2})
+$$
+
+The value $b$ is a hyperparameter that you can tune. 
+
+## 7.2 Multiclass Classification
+
+Some classification algorithms can be defined with more than two classes. In **multiclass classification**, the label can be one of $C$ classes. Many machine learning algorithms are binary, but many can be extended to handle multiclass problems. 
+
+Logistic regression can be naturally extended to multiclass learning problems by replacing the sigmoid function with a **softmax function**.
+
+But when you a multiclass problem and a binary classification learning algorithm, a strategy called **one versus rest** is often used. The idea is to transform a multiclass problem into $C$ binary classification problems and to build $C$ binary classifiers. For example, if we have three classes, we can create copies of the original dataset and modify them. The first copy will have all labels not equal to 1 set to 0. The second copy will have all labels not equal to 2 set ot zero. The third copy will have all the labels not equal to 3 set to zdro. Now we have three binary classification problems. 
+
+Once we have the three models, to classify the new inpout feature vector $x$ we apply the three models to the input, and we get three predictions, and we pick the most certain one. 
+
+## 7.3 One-Class Classification
+
+Sometimes the dataset has examples of one class and we want to train a model what would distinguish examples of this class from everything else. 
+
+**One-class classification**, also known as **unary classification** or **class modeling** tries to identify objects of a specific class among all objects, by learning from a training set contianing only objects of that class. 
