@@ -875,4 +875,4 @@ $$
 f(x) = \frac{1}{N}\sum^N_{i=1}w_iy_i, \text{ where } w_i = \frac{Nk(\frac{x_i-x}{b})}{\sum^N_{l=1}k(\frac{x_l-x}{b})}
 $$
 
-The function $k(z)$ is called the **kernel**. 
+The function $k(z)$ is called the **kernel**. The kernel plays the role of a similarity function: the values of coefficients $w_i$ are higher when $x$ is similar to $x_i$ and lower when they are dissimilar. Kernels can have different forms, the most frequently used one is the Gaussian kernel:
