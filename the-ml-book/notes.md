@@ -863,3 +863,16 @@ where $g_1$ is the $tanh$ function, $g_2$ is the gate function, and is implement
 A gated unit takes an input and stores it for some time, like the identity function ($f(x) = x$). Because the derivative of the identity function is constant, when a network with gated units is trained with backpropagation through time, the gradient does not vanish.
 
 More popular RNNs include **bi-directional RNNs**, RNNs with **attention**, and **sequence-to-sequence RNNs**. All RNNs can be generalized as a **recursive neural network**.
+
+# Chapter 7: Problems and Solutions
+
+## 7.1 Kernel Regression
+
+What if the data we have doesn't fit a straight line? Polynomial regression could help. Assume we have one-dimensional data $\{(x_i, y_i)\}^N_{i=1}$. We could try to fit a quadratic line $y = w_1x_i^2 + w_2x_i+b$ to our data. We could use gradient descent with backpropagation on a cost function. But if our input is a D-dimensional feature vector, finding just a polynomial would be virtually impossible.
+
+**Kernel Regression** is a non-parametric method. There are no parameters to learn. The model is based on the data itself, kind of like a kNN. The model would look like this:
+$$
+f(x) = \frac{1}{N}\sum^N_{i=1}w_iy_i, \text{ where } w_i = \frac{Nk(\frac{x_i-x}{b})}{\sum^N_{l=1}k(\frac{x_l-x}{b})}
+$$
+
+The function $k(z)$ is called the **kernel**. 
