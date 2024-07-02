@@ -952,3 +952,21 @@ Bagging consistss of creating multiple "copies" of the training data, where each
 
 ### Random Forest
 
+The "vanilla" bagging algorithm works as follows. Given a training set, we create $B$ random samples $S_B$ of the training set and build a decision tree model $f_b$ using each sample $S_B$ as the training set. To sample $S_B$ from $B$, we do the **sampling with replacement**. This means that we start with an empty set, and then pick at random an example from the training set, and put its exact copy into the subset, keeping the original examples in the original training set. We keep picking examples at random until $|S_B| = N$
+
+After training, we will have $B$ decision trees. The prediction for a new examples $x$ is obtained as the average of $B$ predictions
+$$
+y = \hat{f}(x)=\frac{1}{B}\sum^B_{b=1}f_b(x)
+$$
+
+in the case of regression, or by taking the majority vote in the case of classification.
+
+Random forest is different from the vanilla bagging in one small way. It uses a modified tree learning algorithm that inspects, at each split in the learning process, a random subset of the features. It does this to avoid the correlation of the trees: if one or few featuers are very strong predictors for the target, these features will be selected to split examples in many trees. This would result in many correlated trees in our "forest". Correlated predictors will not help in improving the accuracy of the prediction. The main reason behind a better model is that the good models will likely agree on the same prediction, while bad models will disagree on different ones. Correlation will make bad models agree, which would skew the vote / average. 
+
+The most important hyperparameter to tune is the number of trees, $B$, and the size of the random subset of the features to consider each split. 
+
+Why is random forest so effective? The reason is that by using multiple samples of the original dataset, we reduce the **variance** of the final model. Low variance means low **overfitting**. The model doesn't learn the small variations in the dataset because our dataset is just a small sample of the population of possible examples. By creating multiple random samples with replacement, we reduce the effect of artifacts that contribute to overfitting.
+
+### Gradient Boosting
+
+Another effective ensemble learning algorithm, is **gradient boosting**. 
