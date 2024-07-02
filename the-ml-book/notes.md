@@ -936,3 +936,9 @@ In cases where the number of positive values each label can take is small, one c
 
 This is fine, but can't be done when there are too many possible combinations of classes. This approach keeps your labels correlated, where previous approaches predict each label independently of one another. 
 
+## 7.5 Ensemble Learning
+
+Right now, we've learned two extremes of the spectrum, the algorithms introduced in chapter 3, and very deep neural networks. An approach to meet in the middle of the complexity number line is **ensemble learning**.
+
+Ensemble learning focuses on making many weak models, not on one very precise model, and them combines the predictions given by those *weak* models to obtain a high-accuracy **meta-model**.
+
