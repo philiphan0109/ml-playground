@@ -896,4 +896,24 @@ Once we have the three models, to classify the new inpout feature vector $x$ we 
 
 Sometimes the dataset has examples of one class and we want to train a model what would distinguish examples of this class from everything else. 
 
-**One-class classification**, also known as **unary classification** or **class modeling** tries to identify objects of a specific class among all objects, by learning from a training set contianing only objects of that class. 
+**One-class classification**, also known as **unary classification** or **class modeling** tries to identify objects of a specific class among all objects, by learning from a training set contianing only objects of that class. This is harder than regular classification. One-class classification learning algorithms are used for outlier detection, anomaly detection, and nolvelty detection.
+
+There are several one-class learning algorithms: **one-class Gaussian** , **one-class k-means**, **one-class kNN**, and **one-class SVM**.
+
+The idea behind the one-class Gaussian is that we model our data as the Gaussian distribution, a **multivariate normal distribution**. The probability density function for MND is:
+$$
+f_{\mu, \Sigma}(x) = \frac{\exp(-\frac{1}{2}(x-\mu)^{T}\Sigma^{-1}(x-\mu))}{\sqrt{(2\pi)^D}|\Sigma|}
+$$
+
+where the function $f$ rturns the probability density corresponding to the input feature vector $x$. Values $\mu$, $\Sigma$ are the learnable paramters, a vector and a matrix. The **maximum likelihood** criterion is optimized to find the optimal values for these two parameters. 
+
+The vector $\mu$ determines where the curve of our Gaussian distribution is centered, while the numbers in $\Sigma$ determine the shape of the curve. Once the model is parameterized by $\mu$ and $\Sigma$, we predict the likelihood of every input $x$ using $f$. Only if the likelihood is above a certain threshold, we predict that the example belongs to that class, else it's an outlier. 
+
+When the data has a more complex shape, we need a more complex algorithm with multiple Gaussians, There are going to be more parameters to learn from the data: one $\mu$ and one $\Sigma$ for each Gaussian and the parameters that combines multiple Gaussians to form one probability density function. 
+
+One-class k-means and one-class kNN are based on a similar principle: build some model of the data and then define a threshold to decide whether our new deature vector looks similar to other examples. I will introduce the **k-means** clustering algorithm. When a new example $x$ is observed, the distance is calculated as the minimum distance between $x$ and the center of each cluster. If the distance is less than a particular threshold, then $x$ belongs to that class. This can be generalized to any number of classes. 
+
+A One-class SVM, depending on the specific model, tries to: 1) separate all training examples from the origin, and maximize the distance from the hyperplane to the origin, or 2) to obtain a spherical boundary around the data by minimizing the volume of this hypersphere. 
+
+## 7.4 Multi-Label Classification
+
