@@ -917,3 +917,22 @@ A One-class SVM, depending on the specific model, tries to: 1) separate all trai
 
 ## 7.4 Multi-Label Classification
 
+When more than one label is appropriate to describe and example from a dataset, it is called **multi-label classifiction**. A picture of a mountain could have the labels: "conifer", "mountain", and "trail" associated with it all at once. 
+
+If the number of possible values for labels is high, but they are all of the same nature, we can transform each labeled example into several labeled examples, one per label. These new examples all have the same feature vector and only one label. That becomes a multiclass classification problem, and we can solve it with using the one versus rest strategy. Now, we have a new hyperparameter: threshold. If the prediction score for some label is above the threshold, this label is predicted for the input feature vector. 
+
+Algorithms that cna naturally make multiclass predictions (decision trees, logistic regression, and neural networks) can be applied to multi-label classification problems. Because they all output a score for each class, we can define a threshold and then assign multiple labels to one feature vector if the threshold is above from value. 
+
+Neural networks can naturally train multi-label classification models by using the **binary cross-entropy** cost function. The output layer of the neural network has one unit per label. Each unit of the output layer has the sigmoid activation function. Each label $l$ is binary. The binary cross-entropy of predicting the probability $\hat{y}_{i, l}$ that example $x$ has label $l$ defined as:
+
+$$
+-(y_{i, l}\ln(\hat{y}_i, l) + (1-y_{i, l})\ln(1-\hat{y}_{i, l}))
+$$
+
+
+The minimization criterion is simply the average of all binary cross-entropy terms across all training examples and their labels. 
+
+In cases where the number of positive values each label can take is small, one can convert multilabel into a multiclass problem using a different approach. Example: we want to label images and labels can be of two types. The first type of label can have two values: {photo, painting}, the label of the second type can have three possible values: {portrait, paysage, other}. We can create new fake classes for each combination of the two original classes, ending up with $2 \times 3 = $ individual classes total. 
+
+This is fine, but can't be done when there are too many possible combinations of classes. This approach keeps your labels correlated, where previous approaches predict each label independently of one another. 
+
