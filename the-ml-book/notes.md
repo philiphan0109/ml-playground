@@ -942,3 +942,13 @@ Right now, we've learned two extremes of the spectrum, the algorithms introduced
 
 Ensemble learning focuses on making many weak models, not on one very precise model, and them combines the predictions given by those *weak* models to obtain a high-accuracy **meta-model**.
 
+Low-accuracy models are usually learned by **weak learners**, learning algorithms that cannot learn complex models, and therefore are fast at training and at the prediction. The most frequently used weak learner is a decision tree. The obtained trees are shallow and not very accurate. But the idea is, if the trees are not identical and each tree is slightly better than random guessing, then can obtain a high accuracy by combining a large number of these trees.
+
+### Boosting and Bagging
+
+Boosting consists of using the original training data and iteratively creating multiple models by using a weak learner. Each new model would be different from the precious one because as a new model is made, it tries to fix the errors the prvious model made. The final **ensemble model** is a certain combination of those multiple weak models built iteratively. 
+
+Bagging consistss of creating multiple "copies" of the training data, where each copy is slightly different, and then applying the weak learner to each copy to obtain multiple weak models and then combining them. A widely used machine learning algorithm based on the idea of bagging is **random forest**.
+
+### Random Forest
+
