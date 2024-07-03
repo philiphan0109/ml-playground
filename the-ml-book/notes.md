@@ -970,3 +970,4 @@ Why is random forest so effective? The reason is that by using multiple samples 
 ### Gradient Boosting
 
 Another effective ensemble learning algorithm, is **gradient boosting**. 
+
