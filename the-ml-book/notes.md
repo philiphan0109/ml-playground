@@ -1131,3 +1131,14 @@ You typically want more than one example of each person for the person identific
 
 ## 7.11 Zero-Shot Learning
 
+This last section will be on **zero-shot learning**. It is a relatively new research area, and there are no algorithms that have any practical use yet. In zero-shot learning, we want to train a model that assigns labels to objects, most commonly - labels to images. 
+
+But we want to predict labels that we didn't have in the training data. How would we do that?
+
+You want to use embeddings not just to represent the input $x$ but also the output $y$. Imagine that we have a model that for any word in English can generate an embedding vector with the following property: if a word $y_i$ has a similar meaning to the work $y_k$, then the embeddin vector for these two words will be similar. These embedding vectors are called **word embeddings**, and can be compared using the consine similarity metric.
+
+Each dimensoin of the embedding represents a specific feature of the meaning of the word. If our word embedding has four dimensions (very little), then these four dimensions could represent: animalness, abstractness, sourness, and yellowness. The word *bee* would have the word embedding [1, 0, 0, 1], the word yellow would have [0, 1, 0, 1]. 
+
+Now in our classification problem, we can replace the label $y_i$ for each example $i$ in our training set with its word emebedding and train a multi-label model that predicts word embeddings. To get the label for a new example $x$ we apply out model $f$ to $x$ and get the embedding $\hat{y}$ and look for all English words that have embeddings similar to $\hat{y}$. 
+
+Why does that work? Take a zebra, clownfish, and tiger. Although they are different colors, two are mammals, they are all striped. If these three features are in word embeddings, the CNN would learn to detect these same features in images. Even if the label "tiger" was not in the training set, when "zebra" and "clownfish" are, the CNN would learn the notion of mammalness, orangeness, and the stripness to predict those objects. 
