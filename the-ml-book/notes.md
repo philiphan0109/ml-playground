@@ -1069,3 +1069,65 @@ $$
 
 where $\Pr(y^{(c)};f(x))$ is the probability score the model $f$ assigns to class $y^{(c)}$ when classifying $x$. If for each $y^{(c)}$, $f(y^{(c)}) = \frac{1}{C}$, basically just guessing, then the model is most uncertain and the entropy is at its maximum of 1. If for some $y^{(c)}$, $f(y^{(c)}) = 1$, then the model is very certain about the class $y^{(c)}$ and the entropy is at its minimum of 0.
 
+Density for the example $x$ can be obtained by taking the average of the distance from $x$ to each of it's $k$ nearest neighbors. 
+
+Once we have the importance score, of each example, we pick the one with the highest importance score and either buy it, or ask an expert to label is. Then we rebuild the model with the labeled example, and continue the process until some criterion is satisfied. This criterion can be the maximum number of requests, or it can depend on how well your model performs. 
+
+The support vector-based active learning strategy consists in build an SVM model using the labeled data. We then ask experts to label the unlabeled example(s) that lie closest to the hyperplane. The idea is that if the example is close to the hyperplane, the most is least certain and would contribute most to the reduction of possible places where the optimal hyperplane could lie. 
+
+## 7.9 Semi-Supervised Learning
+
+In **semi-supervised learning** (SSL), we also have labeled a small fraction of the dataset while most of the reamining examples are unlabaled. We want to use a large number of unlabeled examples to inprove the model performance without asking for additional labeled examples. 
+
+There are many methods for this. One of them, called **self-learning**, uses a learning algorithm to build the initial model using the labeled examples. Then we use the model to all unlabaled examples and label them using the model. If the confidence score of some prediction is higher than some threshold, then we add this labeled example to out training set, retrain the model, and stop until either the performance is satisfactory, or if the performance has stalled. 
+
+This method can help, but it's not great, and the increase in performance isn't super impressive. A better architecture that can be used is the **ladder network**. To understand ladder networks you have to understand what an **autoencoder** is.
+
+An autoencoder is a feed-forward neural network with an encoder-decoder architecture. It's trained to reconstruct its input. So the training example is a pair, $(x, x)$. We want the output $\hat{x}$ of the model $f(x)$ to be as similar to the input $x$ as posible.
+
+THe autoencoder's network looks like an hour glass with a **bottleneck layer** in the middle that contains the embedding of the D-dimensional input vector; the embedding layer usually has much fewer units than $D$. The goal of the encoder, that's in the autoencoder, is to reconstruct the input feature vector from this embedding. Look up an image for the architecture of an autoencoder to understand this.
+
+A **denoising autoencoder** corrupts the left-hand side $x$ in the training example $(x, x)$ by adding some random perturbation to the features. If our examples are grayscale images with pixels represented at values between 0 and 1, a **Gaussian noise** is added to each feature. 
+$$
+n^{(j)} ~ \Nu(\mu, \sigma^2)
+$$
+
+where ~ means sampled from, and $\Nu(\mu, \sigma^2)$ is the Gaussian distribution, with mean $\mu$ and standard deviation $\sigma$, whose probability distribution function is given by:
+$$
+f_{[\mu, \sigma]}(z) = \frac{1}{\sigma \sqrt(2\pi)} \exp(-\frac{(z-\mu)^2}{2\sigma^2})
+$$
+
+The new corrupted by the value of the feature $x^{(i)}$ is given by $x^{(i)}+n^{(j)}$. 
+
+A **ladder network** is a denoising autoencoder with an upgrade. The encoder and the decoder have the same number of layers. The bottle neck layer is directly used to predict the label using softmax. The network has multiple cost functions. For each layer $l$ of the encoder and the corresponding layer $l$ of the decoder, one cost $C^l_d$ penalizes the difference bewteen the outputs of the two layers. When a labeled example is used in training, another cost function $C_c$ penalizes the error in the prediction of the label. The combined cost function, $C_c + \sigma^L_{l=1}\lambda_lC^l_d$, is optimized by the minibatch stochastic gradient descent with backpropagation. The hyperparameters $\lambda$ for each layer determines the tradeoff between the classification and encoding-decoding cost. 
+
+In the ladder network, not only is the input corrupted with noise, but also the output of each encoder layer. When we apply the trained model to the new input $x$, we do not corrupt the input at all. 
+
+Another technique is called S3VM, based on the SVM. We build one SVM model for each possible labeling of unlabeled examples and then we pick the model with the largest margin. 
+
+## 7.10 One-Shot Learning
+
+**One-shot learning** is another important supervised learning paradigm. In one-shot learning, typically applied in face recognition, we want to build a model that can recognize that two photos of the same person represent the same person. If we give the model two different faces, we want it to recognize that they are two different people. 
+
+We could build a binary classifier that takes two images as input and predicts either true or false. But this would create a neural network that twice as big as a regular neural network. Each image would need its own embedding subnetwork. Training such a network would be challenging not only because of its size but also because the positive examples would be much harder to obtain than negative ones. 
+
+A **siamese neural network** can be used to solve this. An SNN can be implemented as any kind of neural network, CNN, RNN, or MLP. THe network only takes one image as input at a time, so the size of the model is not doubled. To obtain a binary classification, out of a network that takes one picture as an input, we train this model differently.
+
+To train an SNN, we use the **triple loss** function. We use three images of a face: image $A$ (for anchor), image $P$ (for positive), and image $N$ (for negative). $A$ and $P$ are two different pictures of the same person; $N$ is a picture of another person. Each training example is not a triplet ($A_i, P_i, N_i$).
+
+The model's task is now to take a picture of a face as input and output an embedding of this picture. The triplet loss for example $i$ is defined as:
+
+$$
+\max(||f(A_i)-f(P_i)||^2 - ||f(A_i) - f(N_i)||^2+\alpha, 0)
+$$
+
+where $\alpha$ is a positive hyperparameter. When our neural network outputs similar embedding vectors for $A$ and $P$, ||f(A_i)-f(P_i)|| will be low; and when it outputs different embedding vectors for $A$ and $N$, ||f(A_i) - f(N_i)|| will be high. If the model is good, we want the term $m = ||f(A_i)-f(P_i)||^2 - ||f(A_i) - f(N_i)||^2$ to be negative. By setting $\alpha$ higher, we force the term $m$ to be even smaller, to make sure that the model learned to recognized the two faces with a high margin. If $m$ is not small enough, $\alpha$ will make it positive, and the model will continue to make $m$ even smaller. 
+
+Instead of choosing random images for $N$, a better way to create triplets for training to use the current model to find candidates for $N$ similar to $A$ and $P$. Using random samples as $N$ would slow down the training, because the neural network will learn to find the most obvious differences among the individuals. 
+
+To build an SNN, we first decide on the architecture of our neural network. CNN is a popular choice. Given an example, to calculate the average triplet loss, we apply the model to $A$, then $P$, then $N$, and then we compute the loss. We repeat that for all triplets in the batch then compute the cost; then we use gradietn descent to backpropagate the cost through the network. 
+
+You typically want more than one example of each person for the person identification model to be accurate. It's called one shot because of the most important application: face-recognition. Such a model could be used to unlock your phone. If the model is good, you only need to have one picture of you on your phone and it will recognize you, and it can also recognize that someone else is not you. When we have trained the mode, to decide whether $A$ and $\hat{A}$ are the same person, we check is $||f(A) - f(\hat{A})||^2$ is less than $\tau$, a hyperparameter.
+
+## 7.11 Zero-Shot Learning
+
