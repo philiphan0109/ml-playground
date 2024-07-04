@@ -214,7 +214,7 @@ Logistic regression is not a regression algorithm, it's a classification algorit
 
 In **logistic regression**, we still want to model $y_i$ as a linear function fo $x_i$, but with a binary $y_i$. This is hard. If we define a negative label as 0 and the positive label as 1, we just need a continuous function with the codomain [0, 1]. If the value returned by the model for a input is closer to 0, then the negative label is assigned to x. A function we can use the is **standard logistic function**, or the **sigmoid**.
 $$
-f(x) = \frac{1}{1+x^{-x}}
+f(x) = \frac{1}{1+e^{-x}}
 $$
 
 The logistic regression model looks like this:
@@ -969,5 +969,103 @@ Why is random forest so effective? The reason is that by using multiple samples 
 
 ### Gradient Boosting
 
-Another effective ensemble learning algorithm, is **gradient boosting**. 
+Another effective ensemble learning algorithm, is **gradient boosting**. Let's look at gradient boosting for regression. Let's start with a constant model, that just predicts the average:
+$$
+f=f_0(x) = \frac{1}{N}\sum^N_{i=1}y_i
+$$
+
+We can modify the labels of each example in our training set:
+$$
+\hat{y}_i = y_i - f(x_i)
+$$
+
+where $\hat{y}_i$ is called the **residual**, and it's the new label for example $x_i$. 
+
+Now with the new training set that contains the residuals, we build a new decision tree model, $f_1$. The boosting model is now defined as $f = f_0 + \alpha f_1$, where $\alpha$ is the learning rate. 
+
+Then we recompute the residuals and replace the labels in the training data, and we make yet another decision tree model $f_2$, redefine the boosting model as $f = f_0 + \alpha f_1 + \alpha f_2$ and the process continues until the predetermined maximum of $M$ trees are conbined. 
+
+This may seem like a pointless process, but it's not. Computing the residuals tells us how well the target of each training examples is predicted by the current model $f$, kind of like the error. Then we train another tree to fix the errors of the current model, and add this new tree to the exisiting model with some weight $\alpha$. Each additional tree added partially fixes the errors made by the previous trees until the maximum number $M$ of trees are combined. 
+
+Okay... but this seems like this has nothing to do with gradients. In gradient boosting, we don't calculate any gradients. To see how gradient boosting and descent are similar, let's return to linear regression. We calculate the gradients in linear regression to move the values of our parameters in a direction so that the cost function reaches its minimum. The gradient shows the direction, but and the $\alpha$ hyperparameter dictates how large of a step to take in that direction. The same happens in gradient boosting. But instead of getting the gradient directly, we use its proxy in the form of residuals: it shows how the model needs to be changed to reduce the residuals.
+
+The three main hypereparameters in gradient boosting to tune is the number of trees, the learning rate, and the depths of the trees. 
+
+Training on residuals optimizes the overall model $f$ for the mean squared error criterion. This is the difference with bagging: boosting reduces the bias instead of the variance - boosting is prone to overfitting. But this can be avoided by careful tuning. 
+
+Gradient boosting for classification is similar, but the steps are different. Consider the binary case. Assume we have $M$ regression decision trees. Similar to logistic regression, the prediction of the ensemble of decision trees is modeled using the sigmoid function:
+$$
+\text{Pr}(y=1|x, f) = \frac{1}{1+e^{-f(x)}}
+$$
+
+where $f(x) = \sum^M_{m=1}f_m(x)$ where $f_m$ is a decision tree.
+
+We apply a maximum likelihood principle by trying to find and $f$ that maximizes $L_f = \sum^N_{i=1}ln[\text{Pr}(y_i=1|x, f)]$. Again, to avoid **numerical overflow**, we maximize the sum of the log-likelihoods rather than the product of the likelihoods. 
+
+The algorithm starts with the initial constant model $f = f_0 = \frac{p}{1-p}$, where $p = \frac{1}{N}\sum^N_{i=1}y_i$. Then at each iteration $m$, a new tree $f_m$ is added to the model. To find the best $f_m$, the partial derivative of $g$, of the current model is calculated for each example:
+$$
+g_i = \frac{dL_f}{df}
+$$
+
+where $f$ is the ensemble classifier model built at the previous iteration $m-1$. To calculate $g_i$, we need to find the deriatives of $ln[\text{Pr}(y_i=1|x, f)]$ with respect to $f$ for all $i$. 
+
+We then transform out training set by replacing the original label $y_i$ with the corresponding partial derivative $g_i$, and build a new tree $f_m$ using the transformed training set. Then we find the optimal update step $\rho_m$:
+$$
+\rho_m = \argmax_{\rho}L_{f+\rho f_m}
+$$
+
+At the end of the iteration $m$, we update the ensemble model $f$ by added the new tree $f_m$:
+$$
+f = f + \alpha \rho_m f_m
+$$
+
+We iterate until $m = M$, and then we return the ensemble model. 
+
+Gradient boosting is popular because it can get very accurate, and it's able to handle very large datasets with millions of examples and features. But because of it's sequential nature, can be slower in training.
+
+## 7.6 Learning to Label Sequences
+
+Sequence data is the msot comomonly observed data form. We talk using sequences, time is sequenced, tasks are sequenced, genes, music, and videos are all sequences. 
+
+**Sequence labeling** is the problem of automatically assigning a label to each element of a sequence. A labeled sequential training example in sequence labeling is a pair of lists $(X, Y)$, where $X$ is a list of feature vetors, and $Y$ is a list of the same length of labels. $X$ could represent works in a sentence, and $Y$ could be the corresponding parts of the speech. In an example $i$, $X_i = [x^1_i, x^2_i, ..., x^{size_i}_i]$ where $size_i$ is the length of the sequence, $Y_i = [y^1_i, y^2_i,..., y^{size_i}_i]$.
+
+RNNs can handle sequences, at time step $t$, it reads an input feature vector $x^{(t)}_i$, and th elast recurrent layer outputs a label $y^{(t)}_{last}$.
+
+However RNNs are not the only possible model for sequence labeling. A model called **Conditional Random Fields** (CRF) is a very effective alternative that often performs well in practice for the feature vectors that have many informative features. Imagine we have a task called **named entity extraction** where we want to build a model that labels each work in a sentence, e.g. "I go to San Fransisco", with one of the following classes: {$location$, $name$, $company_name$, $other$}. If the feature vectors contain binary features such as "Does the word start with a capital letter" or "Does the word appear in a list of locations", they would be very helpful. 
+
+But building these features are way too labor-intensive. CRF is an interesting model and can be seen as a genrealization of logistic regression in sequence data. But usually RNNs are able to outperform them. They are also slower in training making them hard to use on huge datasets. 
+
+## 7.7 Sequence-to-Sequence Learning
+
+**Sequence-to-Sequence Learning** is a generalization to the sequence labeling proble. In seq2seq, $X_i$, and $Y_i$ can have different lengths. seq2seq is commonly used in machine learning translation, conversatinal interfaces, text summarization, spelling correction, and others. 
+
+Not all seq2seq learning problems are solved by neural networks. The network architectures used in seq2seq all have two parts: an **encoder** and **decoder**.
+
+In seq2seq neural network learning, the encoder is a neural network that accepts a sequence as an input. It can be an RNN or a CNN or some other architecture. The role of the encoder is to read the input and generate some sort of state that can be seen as a numerical representation of the *meaning* of the input sequence. The meaning of some input sequence is usually a vector or matrix that contains real numbers, this vector or matrix is called the **embedding** of the input. 
+
+The decoder is another neural network that takes an embedding as input and is capable of generating a sequence of outputs. The embedding it takes is from the encoder. To produce a sequence of outputs, the decoder takes a *start of sequence* input feature, $x^{(0)}$, usually a vector of zeros, and produces the first output $y^{(1)}$, updates its state by combining the embedding and the input $x^{(0)}$, and then uses the output $y^{(1)}$ as its next input $x^{(1)}$. 
+
+Both the encoder and the decoder are trained simultaneously using the training data. The errors at the decoder output is backpropagated through the entire model. 
+
+More accurate predictions can be obtained with architectures that use **attention**. The attention mechanism is implemented by an additional set of parameters that combine some information from the encoder and the current state of the decoder to generate the label. This allows for better retention of long term dependencies than provided by gated units and a bidirectional RNN.
+
+This is very new, and new models are coming out everyday, so keep an eye on it. 
+
+## 7.8 Active Learning
+
+**Active Learning** is an interesting supervised learning paradigm. It's used when obtaining labels are expensive. This is usually the case because medical records and financial data is hard to get, or when the opinion of an expert may be required to annotate data. THe idea is to start learning with relatively few labeled examples, and a large number of unlabeled ones. 
+
+There are multiple strategies to active learning. here, we discuss only the following two:
+
+1) data density and uncertainty based
+2) support vector-based
+
+The first strategy applies the current model $f$, trained using the existing labeled examples, to each of the tramaining unlabelled examples. For each unlabeled examples $x$, the importance score is calculated: $density(x) \cdot uncertainty_f(x)$. Density reflects how many examples surround $x$ in its close neighborhood, while the uncertainty reflexts how uncertain the prediction of the model $f$ is for $x$. In binary classification with sigmoid, the closer the prediction is to 0.5, the more uncertain the model is for that prediction. In SVM, the closer the example is to the decision boundary, the more uncertain the prediction. 
+
+In multiclass classification, **entropy** can be used as a measure of uncertainty:
+$$
+H_f(x) = -\sum^C_{c=1}\Pr(y^{(c)};f(x))\ln[\Pr(y^{(c)}; f(x))]
+$$
+
+where $\Pr(y^{(c)};f(x))$ is the probability score the model $f$ assigns to class $y^{(c)}$ when classifying $x$. If for each $y^{(c)}$, $f(y^{(c)}) = \frac{1}{C}$, basically just guessing, then the model is most uncertain and the entropy is at its maximum of 1. If for some $y^{(c)}$, $f(y^{(c)}) = 1$, then the model is very certain about the class $y^{(c)}$ and the entropy is at its minimum of 0.
 
