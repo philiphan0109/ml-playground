@@ -1143,3 +1143,40 @@ Now in our classification problem, we can replace the label $y_i$ for each examp
 
 Why does that work? Take a zebra, clownfish, and tiger. Although they are different colors, two are mammals, they are all striped. If these three features are in word embeddings, the CNN would learn to detect these same features in images. Even if the label "tiger" was not in the training set, when "zebra" and "clownfish" are, the CNN would learn the notion of mammalness, orangeness, and the stripness to predict those objects. Once we present the image of a tiger, it will recognize those features, whether they are positive or negative, and the closest word emebedding from the dictinary to the predicted embedding would be tiger. 
 
+# Chapter 8: Advanced Practice
+
+These techniques aren't more complex, but are applied in very specific contexts. 
+
+## 8.1 Handling Imbalanced Datasets
+
+Sometimes, examples of some classes will be underrepresented in your training data. For examples, bank frauds are less common, so there are less of them to use for training. If you use a SVM with soft margins, you can define a cost for misclassified examples. Because noise is always present in the data, there is a hgh chance that some examples of genuine transactions will end up on the wrong side of the decision boundary. 
+
+The SVM algorithm tries to move the hyperplane to avoid misclassified examples as much as possible. The "fraudulent" examples, which are the minority, has risk of being misclassified to classify more of the majority class properly. This is when you have an **imbalanced dataset**. 
+
+If a cost is introduced in misclassifying the minority examples, the model will try harder to avoid misclassifying the minority, and will lead to the cost of misclassification of some examples in the majority class. 
+
+If a learning algorithm doesn't allow weighting classes, you can try the tecnique of **oversampling**. This is where you increase the importance of examples of some class by making multiple copies of the example in that class. This is risky. 
+
+The opposite approach **undersampling**, is to randomly remove some of the majority class that is randomly sampled. 
+
+You can also create new synthetic examples, by randoml sampling feature values from multiple examples from the minority class, and then combine them to obtain a new example of that class. Two popular algorithms are used: *synthetic minority oversampling technique* (**SMOTE**), and the *adaptive synthetic sampling method* (**ADASYN**).
+
+SMOTE and ADASYN work similarly in many ways. For a given example $x_i$ of the minority class, they pick $k$ nearest neighbors of this example and then create a synthetic example $x_{new}$ as $x_i + \lambda(x_{zi} - x_{i})$ where $x_{zi}$ is one of those neighbors. 
+
+Both SMOTE and ADASYN pick all possible $x_i$ in the dataset. In ADASYN, the number ofsyntehtic examples generated for each $x_i$ is proportional to the number of examples in $S_k$, which are not from the minority class. This causes more synthetic examples to be generated where the examples of the minority class are rare.
+
+## 8.2 Combining Models
+
+Ensemble algorithms usually combines models of the same nature. They boost performance by combining hundreds of weak models. We can sometimes get additional performance gain by combining strong models made with different learning algorithms. 
+
+The three ways are 1) averaging, 2) majority vote, and 3) stacking
+
+**Averaging** works for regression and classification models that return confidence scores. You simply use all your base models on the input eaxample, the **base models** and then you average the predictions. 
+
+**Majority Vote** works for classification models. You apply all your base models and then return the majority class among all predictions. If there is a tie, you can randomly pick one, or have an odd number of models to use. 
+
+**Stacking** consists of building a meta-model that takes the output of base models as input. Let's say you want to combine classifiers $f_1$ and $f_2$, both predicting the same set of classes. To create a training example, $(\hat{x_i}, \hat{y_i})$ for the stacked model, set $\hat{x_i} = [f_1(x), f_2(x)]$ and $\hat{y_i} = y_i$. 
+
+To train the stacked model, it's recommended to use the training set and tune the hyperparameters of the stacked model using cross-validation. 
+
+All three of the methods above, make sure that they are actually improving model performance, if not, don't bother. The reason that combining multiple models *can* bring better performance is that several uncorrelated strong models agree that they are more likely agree on the correct outcome. They must be *uncorrelated*. These base models should be obtained using different features or algorithms - e.g. Random Forest and SVM. Combining different versions of the decision tree learning algorithm, or several SVMs, may not improve performance that much.
