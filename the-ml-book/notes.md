@@ -1180,3 +1180,49 @@ The three ways are 1) averaging, 2) majority vote, and 3) stacking
 To train the stacked model, it's recommended to use the training set and tune the hyperparameters of the stacked model using cross-validation. 
 
 All three of the methods above, make sure that they are actually improving model performance, if not, don't bother. The reason that combining multiple models *can* bring better performance is that several uncorrelated strong models agree that they are more likely agree on the correct outcome. They must be *uncorrelated*. These base models should be obtained using different features or algorithms - e.g. Random Forest and SVM. Combining different versions of the decision tree learning algorithm, or several SVMs, may not improve performance that much.
+
+## 8.3 Training Neural Networks
+
+In neural network training, the hardest thing is to convert your data into the input the network can read and work with. If you have images, they have to be the same size. 
+
+Text has to be tokenized. For CNN and RNN, each token is converted into a vector using one-hot encoding. Another way to represent tokens is by using **word embeddings**. 
+
+Choosing a specific is a difficult choice. Like seq2seq learning, there are multiple architectures you can use. 
+
+The advantage of a modern architecture over an older one becomes less significant as you preprocess, clean and normalize your data, and create a larger training set. These current models can be very hard to implement on your own and usually require much computational power to train. 
+
+Once you have decided on the architecture, you want to decide on the number of layers, their type, and size. Start simple - one or two layers - and then see how it performs, you wan to have a low bias and perform well on the training set. If not, slowly increase the size of the model until it fits the training data perfectly. Once this is achieved, if the model has high variance and doesn't perform well on validation data, add regularization to your model. If adding regularization causes the model to not fit the training data, increase the size of the network.
+
+## 8.4 Advanced Regularization
+
+In neural networks, beside L1 and L2 regularizatiion, there are other neural network specific regularizers: **dropout**, **early stopping**, and **batch-normalization**. 
+
+Dropout is simple. Each time you run a training example through the network, you randomly exclude some units from the computation. The higher the perecentage of units excluded, the higher the regularization effect. You can add a dropout layer between the two successive layers, or you can specify the dropout parameter for the layer. 
+
+Early stopping is the way to train a neural network by saving the preliminary model after every epoch and assessing the performance of the preliminary model on the validation set. As the number of epochs increase, the cost decreases. The decreased cost means that the model fits the training data well. But at some point, it will start overfitting. You can stop the training once you observe a decreased performance on the validation set if you save the version of a model every epoch. Or you can keep running and training process for a fixed number of epochs and then pick the best model. Models saved after each epoch are called **checkpoints**. 
+
+Batch normalization is a technique that standarizes the outputs of each layer before the units of the subsequent layer receive them as input. Batch normalization results in faster and more stable training. 
+
+Another technique that can be used on any learning algorithm is **data augmentation**. This is used to regularize models that work with images. Once you have your original labeled training set, you can create synthetic examples from an original example by applying different transformations of the original image: zooming, rotating, flipping, darkening, etc. all while keeping the original label. This increases the amount of data you have and usually the performance of the model. 
+
+## 8.5 Handling Multiple Inputs
+
+When working with multimodal data, (e.g. images and text, video and audio), it's hard to adapt **shallow learning** algorithms to work with multimodal data. But it's not impossible. Let's say your input is an image and a piece of tet and the binary output indicates whether or not the text describes the image. You could train a shallow model on the image and another one on the text, and then use a model combination model we discussed above.
+
+If you can't divide your problem into two independent subproblems, you can try to vectorize each input, and then concatenate the two vectors together. 
+
+With neural networks, you have more flexibility. You can built two subnetworks, one for each type of input. A CNN could read the image, and an RNN could read the text. Both subnetworks would output an embedding in the their last layer: CMM has an embedding of the image, and the RNN has an embedding of the text. You can then concatenate the two embeddings then add a classification layer, on top of the concatenated embeddings. 
+
+## 8.6 Handling Multiple Outputs
+
+In some cases you might want to output multiple outputs for one input, like in multi-label classification. Most problems that require multiple outputs can usually be simplified into a multi-label classification. Tasks that have labels of the same nature or fake labels and be created as an enumeration of combinations of the original labels. 
+
+In some cases, the outputs are multimodal, and their combinations cannot be enumerated. Take this example: you are building a model that detects and object on an image and returns its coordinates. The model also has to return a tag describing the object. Your training example will be a feature vector that represents an image. The label will be a vector of coordinates and a one-hot encoded tag. 
+
+To handle a situation like this, you can create one subnetwork that would work as an encoder, reading the image with multiple convolution layers. The encoder's last layer would be the embedding of the image. Then you make two other subnetworks: the first has ReLU as the last layer and uses the mean-squared error $C_1$ to calculate the loss, and the second subnetwork will take the same embedding vector as input and predict the probabilities for each tag. The softmax layer can be used for the last layer of the second subnetwork and then use the average negative log-likelihood cost $C_2$ (**cross-entropy**)
+
+Now, with two loss functions, they need to be weighed. You can another hyperparameter $\gamma$ in the range $(0, 1)$ and define the actualy cost function as $\gamma C_1+(1-\gamma)C_2$. 
+
+## 8.7 Transfer Learning
+
+**Transfer Learning** 
