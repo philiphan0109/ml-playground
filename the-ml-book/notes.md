@@ -1225,4 +1225,28 @@ Now, with two loss functions, they need to be weighed. You can another hyperpara
 
 ## 8.7 Transfer Learning
 
-**Transfer Learning** 
+**Transfer Learning** is where neural networks have an advantage over shallow models. In transfer learning, you pick an existing model trained on some dataset, and then adapt this model to predict examples from another dataset. This second dataset is not a holdout set you would use for vaclidation or testing. It can be a unique subset of the task the original model was trained for, coming from another statistical distribution. 
+
+For example, there is a model trained to recognize and label wild animals on a large labeled dataset. Now, you want to build a model that recognizses domestic animals. With shallow learning, you don't have a ton of options: you have to build another big labeled dataset, now for domestic animals. With neural networks, this becomes alot easier:
+
+1. Build a deep model on the original wild animal dataset.
+2. Compile a much smaller labeled dataset fory our second model.
+3. Remove the last couple layers from the first model. These layers are for classification or regression, and follow the embedding laer.
+4. Replace the removed layers with new layers adapted for your new problem.
+5. "Freeze" the parameeters of the layers remaining from the first model.
+6. Use your smaller dataset and gradient descent to train the parameters of only the new layers.
+
+There are multiple deep models for visual problems online that you can use. Even without an existing model, transfer learning can also help when your problem requires a labeled dataset that is very costly to obtain, but you can get another dataset that's more available, but also more general. 
+
+## 8.8 Algorithmic Efficiency
+
+Not all algorithms that solve problems are practical, some are slow. **Big O notation** isused to classify algorithms according to how their running time or space requirements grow as the input size grows. 
+
+An algorithm is called efficient when its complexity is polynomial in the size of the input, so $O(N)$ and $O(N^2)$ are both efficient. 
+
+Use appropriate data structures. If the order of elements does not matter, use a set instead of a list. When checking if an element belongs in a set $S$, it's faster than checking if the same element is in a list $\hat{S}$.
+
+Unless you are sure what you are doing is more efficient, always defer to Python libraries to write your own code. These libraries were built to be efficient. 
+
+# Chapter 9: Unsupervised Learning
+
