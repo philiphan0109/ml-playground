@@ -1250,3 +1250,38 @@ Unless you are sure what you are doing is more efficient, always defer to Python
 
 # Chapter 9: Unsupervised Learning
 
+**Unsupervised Learning** deals with problems where the data doesn't have labels. That property makes it very problematic for many applications. There is a lack of a reference point to judge the quality of the model. 
+
+## 9.1 Density Estimation
+
+**Density estimation** is a problem of modeling the probability density function of the unknown probability distribution form which the dataset has been drawn. This can be used for novelty or intrusion detection. Recall, in a one-class classfication model, our model is **parametric**, a multivariate normal distribution (MVN). We use **nonparametric models** in kernel regression. The same can be used for density estimation.
+
+Let $\{x_i\}^N_{i=1}$ be a one-dimensional dataset whose examples were drawn from a distribution with an unknown probability distribution function $f$. with $x_i \in \mathbb{R}$ for all $i$. We want to model the shape of $f$. The kernel model of $f$, denoted $\hat{f}_b$ is given by:
+$$
+\hat{f}_b(x) = \frac{1}{Nb}\sum^N_{i=1}k(\frac{x-x_i}{b})
+$$
+where $b$ is a hyperparameter that controls the tradeoff between bias and variance of our model and $k$ is a kernel. 
+
+We look for such a value of $b$ that minimizes the difference between the real shape of $f$ and the shape of our model $\hat{f}_b$. We can use the **mean integrated squared error (MISE)** for this:
+$$
+MISE(b) = \mathbb{E}[\int_{\mathbb{R}}(\hat{f}_b(x) - f(x))^2dx]
+$$
+
+We square the difference bewteen the actual probability distribution function $f$ and out model of it $\hat{f}_b$. The integral replaces the summation that would appear in the mean squared error, and the expectation operator replaces the average. 
+
+When our loss is a function with a continuous domain, we have to replace the summation with an integration. The expectation operator means we want $b$ to be optimal for all possible realizations of our training set $\{x_i\}^N_{i=1}$. This is important because $\hat{f}_b$ is defined on a finite sample of some probability distribution, while the real probability distribution function is defined on an infinite domain. Distributing the square, we get:
+$$
+MISE(b) = \mathbb{E}[\int_{\mathbb{R}}\hat{f}_b(x)^2dx] - 2\mathbb{E}\mathbb{E}[\int_{\mathbb{R}}\hat{f}_b(x)f(x)dx] + \mathbb{E}[\int_{\mathbb{R}}f(x)^2dx]
+$$
+
+The third term is independent of $b$ and can be ignored. An unbiased estimator of the first term is given by $\int_{\mathbb{R}}\hat{f}_b(x)^2dx$ while the unbiased estimator of the second term can be approximated by **cross-validation** $-\frac{2}{N}\sum^N_{i=1}\hat{f}_b^{(i)}(x_i)$, where $\hat{f}_b^{(i)}$ is a kernel model of $f$ computed on our training set with the example of $x_i$ excluded.
+
+The term $\sum^N_{i=1}\hat{f}_b^{(i)}$ is known as the **leave one out estimate**, a form of cross-validation in which each fold consists of one example. To find the optimal value for $b$, we minimize the cost:
+$$
+s\int_{\mathbb{R}}\hat{f}_b(x)^{(2)}dx - \frac{2}{N}\sum ^N_{i=1}\hat{f}_b^{(i)}(x_i)
+$$
+
+We can find this optimal $b$ using grid search. 
+
+## 9.2 Clustering
+
