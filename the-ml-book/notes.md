@@ -1378,3 +1378,50 @@ There are many more clustering algorithms: worth mentioning are **spectral clust
 
 ## 9.3 Dimensionality Reduction
 
+Modern machine learning algorithms handle very high-dimensional examples that can contain up to millions of features very well. With modern computational ability, **dimensionality techniques** are almost obsolete. The most frequent use case is in daata visualization, when humans can only interpret three dimensions on a plot.
+
+Another case is when you need to build an interpretable model, and to do so you are limited to a choice of learning models. By reducing the dimensionality of your data, you are able to use shallow learning techniques such as the decision tree ot linear regression. Dimensionality reduction removes redundant or highly correlated features, and also reduces the noise in the data. 
+
+There are three widely used techniques of dimensionality reduction: **principle component analysis**, **uniform manifold approximation and projection**, and **autoencoders**.
+
+Autoencoders were presented in chapter 7. You can use a low dimensional output of the **bottleneck layer** that represents the essential information contained in the input vector. You know this because the autoencoder is able to use this information to reconstruct the input feature because on the bottleneck layer output alone.
+
+### Principle Component Analysis
+
+**Principle component analysis** or PCA is a math based dimensionality reduction method. Here we will go through the intuition part.
+
+Consider a two-dimensional dataset. Principle components are vectors that define a new coordinate system in which the first axis goes in the direction of the highest variance in the data. The second axis is orthogonal to the first one and goes in the direction of the second highest variance of the data. 
+
+To reduce the dimensionality of our data, we pick a new dimention $D_n$, and take the first $D_n$ principle components and project out data points onto them. 
+
+When our data is very high-dimensional, it often happens in practice that the first two or three principal components account for most of the variation in the data.
+
+### UMAP
+
+The idea behind dimensionality reduction algorithms for visualization such as **t-SNE** and **UMAP** is basically the same. We design a similarity metric for two examples. For visualization purposes, besides the Euclidean distance, this similarity metric often reflcets from local properties of the two examples. Such as the density of other examples around them.
+
+In UMAP, this similarity metric $w$ is defined as:
+$$
+w(x_i,x_j) = w_i(x_i, x_j)+w_j(x_j, x_i)-w_i(x_i, x_j)w_j(x_j, x_i)
+$$
+
+The function $w_i(x_i,x_j)$ is defined as:
+$$
+w_i(x_i,x_j) = \exp(-\frac{d(x_i, x_j) - \rho_i}{\sigma_i})
+$$
+
+where $d(x_i, x_j)$ is the Euclidean distance between two examples, $\rho_i$ is the distance from $x_i$ to its closest neighbor and $\sigma_i$ is the distance from $x_i$ to its $k$th nearest neighbor.
+
+The similarity metric for UMAP is symmetric, $w(x_i, x_j) = w(x_j, x_i)$. Let $w$ denote the similarity of two examples in the original hyperspace, and let $w'$ be the similarity given by the same metric, but in a new low dimensional space.
+
+Before moving forward, we need to define a **fuzzy set**. A fuzzy set is a generalization of a set. For each element in an fuzzy set, there's a membership function that defines the membership strength of that element in that fuzzy set. We say that $x$ weakly belongs to a fuzzy set $S$ is the $\mu_S(x)$ is close to 0. On the other hand, if it's close to 1, then $x$ has a strong membership in $S$. If the value of this membership strength is equal to 1 for all elements in the set, this set is no longer a fuzzy set.
+
+Let's see how we can use this. Because the values of $w$ and $w'$ lie in the range between 0 and 1, we can see $w(x_i, w_j)$ as membership of the pair of examples $(x_i, x_j)$. The notion of similarity of two fuzzy sets is called **fuzzy set cross-entropy**.
+
+UMAP is able to separate things visually better, but it slower than the PCA and faster than the autoencoder.
+
+## 9.4 Outlier Detection
+
+**Outlier detection** is the problem of detecting the examples in the dataset that are very different from what a usual example in the dataset would look like. An autoencoder and one-class classifier learning can be used to solve this. If we use an autoencoder, we train it on the dtaset, and then we use the autoencoder to reconstruct the new example from the bottleneck layer. The model will probably not be able to reconstruct and outlier.
+
+In one-class classification, the model predicts that the input example belongs to the class, or is an outlier.
