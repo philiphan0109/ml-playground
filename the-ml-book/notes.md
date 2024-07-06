@@ -1301,4 +1301,80 @@ The value of *k*, the number of clusters, is a hyperparameter that has to be tun
 
 ### DBSCAN and HDBSCAN
 
+**DSCAN** is a density based clustering algorithm. Instead of gussing how many clusters you need, DBSCAN only has two hyperparameters: $\epsilon$ and $n$. You start by picking an example $x$ from your dataset at random and assign it to cluster 1. Then you caount how many exampls have the distance from $x$ less than or equal to $\epsilon$. If this quantity is greater than $n$, then you put all these $\epsilon$-neighbors to the same cluster 1. Then examine each member of cluster 1 and find their respeective $\epsilon$-neighbors. If some member of cluster 1 has $n$ or more $\epsilon$-neighbors, you expand cluster 1 by adding those neighbors into the cluster. If you run out of examples to add, you pick another example not beloging to any cluster and put it in cluster 2, and repeat. An outlier is an example whose $\epsilon$-neighborhood contains less than $n$ examples. 
+
+DBSCAN can build clusters that have an arbitrary shape, while centroid based techniques only create shapes of a hypersphere. The drawback, it choosing the hyperparameters $\epsilon$ and $n$. 
+
+**HDBSCAN** keeps the advantages of DBSCAN and removes the need to decide on the value of $\eplison$. The algorithm is capable of building clusters of varying density. It only has one important hyperparameter: $n$, the minimum number of examples to put into a cluster. It can handle millions of examples quickly. Even though modern implementations of k-means will still be faster than HDBSCAN, the qualities of HDBSCAN can outweigh its drawbacks.
+
+### Determining the Number of Clusters
+
+How many clusters should your data have? That is the question. If you look at a one, two, or three dimensional dataset, you can see "clouds" of datapoints. Each cloud is a potential cluster. But it's hard to visualize for D-dimensional data. 
+
+You can use **prediction strength**. Split the data into training and test sets. Once you have the training and test sets, $S_{tr}$ and $S_{te}$, you fix $k$ and run a clustering algorithm $C$ on both sets and obtain their results.
+
+Let $A$ be the clustering built using the training set. Clusters in A are regions, and if an example falls within one of those regions, then that examples belongs in the same cluster. 
+
+Now we can create a **co-membership matrix** $D[A, S_{te}]$. $D[A, S_{te}]^{(i, i')} = 1$ if and only if examples $x_i$ and $x_i'$ belong to the same cluster according to $A$. So we have a trained clustering $A$ derived from the training set, and a matrix that indicates whether two examples from $A$ belong to the same cluster in $A$.
+
+If the quantity $k$ is reasonable, then two examples that belong to the same clustering produced from the test set, will likely belong to the same cluster in the clutering produced from the training set. 
+
+The prediction strength for the number of cluster $k$ is given by:
+$$
+ps(k) = \min_{j=1,...,k}\frac{1}{|A_j|(|A_j|-1)}\sum_{i, i' \in A_j}D[A, S_{te}]^{(i, i')}
+$$
+
+where $A = C(S_{tr}, k)$, $A_j$ is the $j$th cluter from the cluster $C(S_{te}, k)$ and $|A_j|$ is the number of examples in cluster $A_j$.
+
+Given a clustering $C(S_{tr}, k)$, for each test cluster, we compute the proportion of observation pairs in that cluster that are also assigned to the same cluster by the training set centroids. The prediction is the minimum of this quantity over the $k$ test clusters.
+
+A good goal is $ps(k) > 0.8$. 
+
+Another effective method you can use to estimate the number of clusters is the **gap statistics** method - readers are encouraged to look this up.
+
+### Other Clustering Algorithms
+
+DBSCAN and k-means create **hard clusterings**, where each examples can only belong to one cluster. A **Gaussian mixture model**, allows each example to be a number of several clusters with different membership scores. This is very similar to doing model-based density estimation. Instead of having just one multivariate normal distribution, we have a weighted sum of multiple:
+$$
+f_X = \sum^k_{j=1}\phi_j f_{\mu_j, \Sigma_j}
+$$
+
+where $f_{\mu_j, \Sigma_j}$ is an MND. The values of parameters ${\mu_j, \Sigma_j}$ and $\phi$ are obtained using the **expectation maximization algorithm** to optimize the **maximum likelihood** criterion.
+
+Let's focus on one-dimensional data, and assume there are two clusters, therefore, we have two gaussian distributions:
+$$
+f(x|{\mu_1, \sigma^2_1}) = \frac{1}{\sqrt{2\pi\sigma_1^2}}\exp(-\frac{(x-\mu_1)^2}{2\sigma^2_1}) and f(x|{\mu_2, \sigma^2_2}) = \frac{1}{\sqrt{2\pi\sigma_2^2}}\exp(-\frac{(x-\mu_2)^2}{2\sigma^2_2})
+$$
+
+where $f(x|{\mu_1, \sigma^2_1})$ and$f(x|{\mu_2, \sigma^2_2})$ are two probability distribution functions defining the likelihood of $X = x$.
+
+We use the expectation maximization algorithm to estimate those parameters. In the beginning, we guess the initial values of $\mu_1, \sigma_1^2, \mu_2, \sigma^2_2$, and set $\phi_1 = \phi_2 = \frac{1}{2}$. 
+
+At each iteration, four steps are executed:
+
+1. For all $i$, calculate the likelihood of each $x_i$ using the gaussian distribution.
+
+2. Use **Bayes' Rule** to calculate the likelihood $b_i^{(j)}$ for each example $x_i$ that the example belongs to the cluster $j$.
+
+3. Compute the new values of $\mu_j$ and $\sigma^2_j$ as:
+$$
+\mu_j \leftarrow \frac{\sum_{i=1}^N b_i^{(j)} x_i}{\sum_{i=1}^N b_i^{(j)}} \quad \text{and} \quad \sigma_j^2 \leftarrow \frac{\sum_{i=1}^N b_i^{(j)} (x_i - \mu_j)^2}{\sum_{i=1}^N b_i^{(j)}}.
+$$
+
+4. Update $\phi_j$ as:
+$$
+\phi_j = \frac{1}{N}\sum^N_{i=1}b_i^{(j)}
+$$
+
+The expectation maximization algorithm is very similar to the k-means algorithm: start with random clusters, iteratively update each cluter's parameters by averaging the data that is assigned to that cluster. In the case of the gaussian mixture model, the assignment of an example $x_i$ is **soft**: $x_i$ belongs to cluster $j$ with probability $b^{(j)}_i$. This is why we calculate the new values for $\mu_j$ and $\sigma_j^2$ not as an average but as a **weighted average**. 
+
+Once we have the the learned parameters, the membership score of example $x$ in cluster $j$ is given by $f(x|\mu_j, \sigma_j^2)$.
+
+Extending this to multiple dimensions is simple. Instead of a variance $\sigma^2$, we now have the covariance matrix $\Sigma$ that parameterizes the multinomial normal districution. 
+
+Contrary to k-means, the clusters in gaussian mixture model has the form of an ellipse that can have an arbitrary elongation and rotation. 
+
+There are many more clustering algorithms: worth mentioning are **spectral clustering** an **heirarchical clustering**. 
+
+## 9.3 Dimensionality Reduction
 
