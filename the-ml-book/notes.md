@@ -1285,3 +1285,20 @@ We can find this optimal $b$ using grid search.
 
 ## 9.2 Clustering
 
+**Clustering** is a problem of learning to assign a label to examples by leveraging an unbalanced dataset. Because the dataset is unlabeled, deciding on whether the learned model is optimal is alot harder compared to supervised learning.
+
+There are a ton of clustering algorithms, can it's hard to tell which one is better. Usually the performance of each algorithm depends on the unknown properties of the probability distribution that the dataset was drawn from. 
+
+### K-Means
+
+The **k-means** clustering algorithms works as follows. You choose *k* - the number of clusters. Then you randomly put *k* feature vectors, called **centroids**, to the feature space. Then we compute the distance from each example $x$ to each centroid $c$ using some distance function. Then we assign the closeest centroid to each example. For each centroid, we calculate the average feature vector of the examples labeled with it, and that average becomes the new centroid. 
+
+We keep doing this and updating the centroids until the assignments don't change after the chentroids are recomputed. 
+
+The initial position of the centroids will influence the final positions, which doesn't seem ideal, as two runs of k=means will result in two different models. Some variants of k-means compute the initial positions of centroids based on some properties of the dataset.
+
+The value of *k*, the number of clusters, is a hyperparameter that has to be tuned by the user. 
+
+### DBSCAN and HDBSCAN
+
+
