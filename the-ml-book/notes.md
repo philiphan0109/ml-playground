@@ -1425,3 +1425,31 @@ UMAP is able to separate things visually better, but it slower than the PCA and 
 **Outlier detection** is the problem of detecting the examples in the dataset that are very different from what a usual example in the dataset would look like. An autoencoder and one-class classifier learning can be used to solve this. If we use an autoencoder, we train it on the dtaset, and then we use the autoencoder to reconstruct the new example from the bottleneck layer. The model will probably not be able to reconstruct and outlier.
 
 In one-class classification, the model predicts that the input example belongs to the class, or is an outlier.
+
+# Chapter 10: Other Forms of Learning
+
+## 10.1 Metric Learning
+
+The two most popular metrics of similarity is the **cosine similarity** and the **euclidean distance**. 
+
+You can create a metric to train your model for your dataset, and it's possible to integrate your metric into any learning algorithm. To find a good metric, you can learn it from the data. 
+
+If we parameterize the euclidean distance formula, we can learn these parameters from the data:
+$$
+d_{A}(x, x') = ||x-x'||_A = \sqrt{(x-x')^{\top}A(x-x')}
+$$
+where $A$ is a $D \times D$ matrix. If $A$ is the identity matrix, then our metric $d_A$ would become the euclidean distance. To be called a metrics, a function of two variables has to satisfy three conditions:
+1. $d(x, x') \ge 0$
+2. $d(x, x') \le d(x, z) + d(z, x')$
+3. $d(x, x') = d(x', x)$
+
+To satisfy the first two conditions, $A$ has to be positive semidefinite (learn linear algebra). But any positive semidefinite matrix has energy $\ge 0$.
+$$
+z^{\top}Mz\ge0
+$$
+for any vector $z$ that satisfies the dimensionality requirnment. 
+
+The second condition is also satisfied if the matrix $A$ is positive semidefinite. 
+
+To satisfy the third confition: $(d(x, x') + d(x', x))/2$.
+
