@@ -1420,7 +1420,7 @@ Let's see how we can use this. Because the values of $w$ and $w'$ lie in the ran
 
 UMAP is able to separate things visually better, but it slower than the PCA and faster than the autoencoder.
 
-## 9.4 Outlier Detection
+## 9.4 Outlier Detection 
 
 **Outlier detection** is the problem of detecting the examples in the dataset that are very different from what a usual example in the dataset would look like. An autoencoder and one-class classifier learning can be used to solve this. If we use an autoencoder, we train it on the dtaset, and then we use the autoencoder to reconstruct the new example from the bottleneck layer. The model will probably not be able to reconstruct and outlier.
 
