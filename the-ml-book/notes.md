@@ -1608,4 +1608,4 @@ Reinforcement learning algorithms such as Q-learning and their neural network ba
 
 These are my notes to *The Hundred Page Machine Learning Book* by Andriy Burkov. This is not a replacement for that. There are typos, things that make sense to me and not the reader. 
 
-Use this as a resource to 
+Use this as a resource to get something explained at a simple level. If you need another explaination of any topic, feel free to use this one.
