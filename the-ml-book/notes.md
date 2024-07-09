@@ -1453,3 +1453,31 @@ The second condition is also satisfied if the matrix $A$ is positive semidefinit
 
 To satisfy the third confition: $(d(x, x') + d(x', x))/2$.
 
+Let's say we have an unannotated set $X = {x_i}^N_{i=1}$. To build the training data for our metric learning problem, we create two sets. The first set $S$ is such that a pair of examples $(x_i, x_k)$ belongs to set $S$ if $x_i$ and $x_k$ are subjectively similar. The second set $D$ is created when a pair of examples $(x_i, x_k)$ belongs to set $D$ if $x_i$ and $x_k$ are dissimilar.
+
+To train matrix $A$ from the data, we want to find a positive semidefinite matrix $A$ that solves the following optimization:
+$$
+\min_A\Sigma_{(x_i, x_k) \in S}||x-x'||^2_A \text{ such that } \Sigma_{(x_i, x_k) \in D} ||x-x'||_A \ge c
+$$
+where $c$ is a positive constant.
+
+The solution to this is found by gradient descent with a modification that ensures that $A$ is positive semidefinite. 
+
+## 10.2 Learning to Rank
+
+**Learning to rank** is a supervised learning problem. One practical problem that can be solved with a ranking algorithm is search results. In search result ranking optimization, a labeled example $X_i$, in the training set of size $N$ is a ranked collection of documents of size $r$. The goal is to find a ranking function $f$ which outputs values that can be used to rank documents. 
+
+Each example $X_i$ is a colleciton of feature vectors with labels. Features in a feature vector $x_{i, j}$ can be used to represent the document $j$. An element from $x_{i, j}$ could represent how recent the document, or what words of the query can be found in the document title, or the size of the document, etc. The label $y_{i, j}$ can be the rank, or a score.
+
+There are three approaches to the problem: **pointwise, pairwise,** and **listwise**.
+
+The pointwise approach transofrm each training example into multiple examples: one example per document. It's a very simple regression problem, where the input $x$ is a feature vector of some document and $y$ is the original score or rank. This solution is far from perfect, each document is considered in isolatin, while the original ranking could optimize the positions of the whole set of documents. For example, if one wikipedia page is already at the top of the search results, another wikipedia page shouldn't also be there.
+
+In the pairwise approach, we consider pairs of docuemnts. Given a pair fo docuemtns $(x_i, x_k)$, we build amodel $f$, outputs a value close to 1 if $x_i$ should be higher than $x_k$ and a value close to 0 otherwise. The final ranking for an unlabeled example $X$, is obtained by aggregating the prediction for all pairs of documents in $X$. This works better than the pointwise approach but is far from perfect.
+
+State of the art ranking algorithms use the **listwise** approach. The listwise approach tries to optimize the model directly on some metric that reflects the quality of the ranking. One metric that is popular is the **mean average precision**, which uses both precision and recall.
+
+To define MAP, we need to ask judges to examine a collection of search results for a query and assign relevancy labels to each search result. Labels could be binary or on some scale to determine the relevancy of a document to the search query. The precision of our model for some query is given by:
+$$
+\text{precision} = \frac{|\{\text{relevant documents}\} \cap {\{\text{retrieved documents}\}}|}{\{\text{retrieved documents}\}}
+$$
