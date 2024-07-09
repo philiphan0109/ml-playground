@@ -1606,3 +1606,6 @@ Reinforcement learning algorithms such as Q-learning and their neural network ba
 
 ## 11.2 Acknowledgements
 
+These are my notes to *The Hundred Page Machine Learning Book* by Andriy Burkov. This is not a replacement for that. There are typos, things that make sense to me and not the reader. 
+
+Use this as a resource to 
