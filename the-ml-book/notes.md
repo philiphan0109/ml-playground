@@ -1519,4 +1519,28 @@ Two modern recommender systems are **factorization machines** and **denoising au
 
 ### Factorization Machines
 
+**Facotrization machines** are relatively new algorithms. Imagine we have a matrix, where each featuer vector represents information about one specific user and one specific movie. Users and movies are encoded as one-hot vectors. Normalized scores the user in the blue gave to each movie they rated is just a number. The target $y$ is the score given by a user to a movie.
+
+Real recommendation systems have millions of users, so the matrix will be very big and very sparse. A regression or classification algorithm would not work very well. Factorization machines approach this problem differently. 
+
+The machine is defined as follows:
+$$
+f(x) = b + \sum^D_{i=1}\sum^D_{j=i+1}(v_iv_j)x_ix_j
+$$
+
+where $b$ and $w_i$ are scalar parameters that are similar to those used in linear regression. Vectors $v_i$ are k-dimensional vectors of **factors**. $k$ is a hyperparameter and is usually much smaller than $D$. Instead of looking for one wide vector of parameters, it completes it by additional parameters that apply to pairwise interactions $x_ix_j$ between features. Instead of having a prameter $w_{i, j}$ for each interaction, which would add an enormous quantity of new parameters to the model, we factorize $w_{i, j}$ into $v_iv_j$ by adding only $Dk$ paraeters to the model.
+
+### Denoising Autoencoders
+
+A **denoising autoencoder** is a neural network that reconstructs its input from the bottleneck layer. The fact that the input is corrupted with noise while the output shouldn't makes denoising autoencoders good for recommendation systems.
+
+New moveis a user could like are seen as if they were removed from the complete set of preferred movies by some corruption process. The autoencoder tries to reconstruct those removed items.
+
+To do this, still use the matrix above. Remove the user and the movie features, keeping only the unique ones. During training remove some of the ratings to the movies with 0. Train the autoencoder to reconstruc the uncorrupted input.
+
+At prediction time, built a feature vector for the user, and the feature vector will include uncorrupted ratings. Use the autoencoder to reconstruct the uncorrupted input. 
+
+A feed-forward neural network could also work as a collaborative filtering model. A training example here is a triplet (**u**, **m**, r). The input vector $u$ is a **one-hot encoding** of a user. The second input vector $m$ is a one-hot encoding of a movie. The output layer could be either a sigmoid or ReLU, to predict $r$.
+
+## 10.4 Self-Supervised Learning: Word Embeddings
 
