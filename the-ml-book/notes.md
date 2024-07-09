@@ -1481,3 +1481,42 @@ To define MAP, we need to ask judges to examine a collection of search results f
 $$
 \text{precision} = \frac{|\{\text{relevant documents}\} \cap {\{\text{retrieved documents}\}}|}{\{\text{retrieved documents}\}}
 $$
+
+The **average precision** metric, AveP, is defined for a ranked collection of documents returned by a search engine for a query $q$ as:
+$$
+\text{AveP(q)} = \frac{\sum^n_{k=1}(P(k)\cdot rel(k))}{|{\text{relevant documents}}|}
+$$
+
+where $n$ is the number of retrieved documents, $P(k)$ denotes the precision computed for the top $k$ results returned by our ranking model for the query, $rel(k)$ is an indicator function equality 1 ic the item at rank $k$ is a relevant focument and 0 otherwise. The mean average precision for a collection of search queries of size $Q$ is given by:
+$$
+\text{MAP} = \frac{\sum^Q_{q=1}\text{AveP(q)}}{Q}
+$$
+
+The listwise algorithm goes like this. It uses gradient bboosting to train the ranking function $h(x)$. Then the binary model $f(x_i, x_k)$ that predicts whether the document $x_i$ should have a higher rank than the document $x_k$ is given by a sigmoid with hyperparameter $\alpha$.
+$$
+f(x_i, x_k) = \frac{1}{1 + \exp(h(x_i) - h(x_k))\alpha}
+$$
+
+The cost function is the cross-entropy function. In gradient boosting, we combine multiple regression trees to build the function $h$ by minimizing the cost. We can then sort the results of the model $f$ to get the final ranking.
+
+## 10.3 Learning to Recommend
+
+**Learning to recommend** is usually used to build recommendation systems. Usually we have a user who consumes content, and the history of their consumption and want to suggest new content to this user. 
+
+There are two approaches: **content-based filtering** and **collaborative filtering**. 
+
+Content-based filtering consists of learning what users like based on the descriptin of the content they consume. If a user reads news articles on science and tech, we would suggest more docuemtns on science and tech. We could create one training set *per user* and add news articles to this dataset as a feature vector $x$ and whether the user recently read this article as a label $y$, and then build a model of each user can regularly examine each piece of new content to determine whether a user would read it or not. 
+
+There are limitations to this, the user can be trapped in a filter-bubble, where the system only suggests information very similar to the material the user has already consumed. This prevents users from expanding from that bubble. 
+
+Collaborative filtering has a significant advantage over content-based filtering: the recommendtions for one user is based on what other users comsume or rate. If two users gave high ratings to the same ten movies, then it's safe to assume that they have very similar taste in movies. User 1 will appreciate the movies that user 2 likes, and vice versa. But the content of the recommended items are ignored. 
+
+In collaborative filtering, the information on user preferences is organizes in a matrix. Each row is a user and each column is a piece of content. This matrix is usually very sparse, because people watch different things, and most users consume just a tiny fraction of the available content items. 
+
+Real-world recommender systems use a hybrid approach: they combine reccomendations obtained by the content-based and collaborative filtering models.
+
+Two modern recommender systems are **factorization machines** and **denoising autoencoders**.
+
+### Factorization Machines
+
+
