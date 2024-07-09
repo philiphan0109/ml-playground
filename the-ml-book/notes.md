@@ -1544,3 +1544,4 @@ A feed-forward neural network could also work as a collaborative filtering model
 
 ## 10.4 Self-Supervised Learning: Word Embeddings
 
+
