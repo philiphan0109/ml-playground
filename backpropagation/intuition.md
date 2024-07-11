@@ -80,6 +80,6 @@ $$
 \frac{\partial C_0}{\partial a^{(L-1)}_k} = \sum_{j=0}^{n_L-1}\frac{\partial z^{(L)}_{j}}{\partial a^{(L-1)}_k} \frac{\partial a^{(L)}_j}{\partial z^{(L)}_j} \frac{\partial C_0}{\partial a^{(L)}_j}  
 $$
 
-This process for calculating the derivative of the cost function with respect to a weight from the second to last layer can be repeated for virtually any other layer. 
+This process for calculating the derivative of the cost function with respect to a weight from the second to last layer can be repeated for virtually any other layer.
 
 
