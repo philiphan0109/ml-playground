@@ -9,7 +9,7 @@ x_train = torch.tensor(np.arange(-50, 50, 1), dtype=torch.float32).view(-1, 1)
 y_train = []
 sign = 1
 for i in range(len(x_train)):
-    if i % 10 == 0:
+    if i == 50:
         sign *= -1
     y_train.append(sign)
 y_train = torch.tensor(y_train, dtype = torch.float32).view(-1, 1)

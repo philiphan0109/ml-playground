@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-class relumodel(nn.Module):
+class relumodel(nn.Module):                                    
     def __init__(self):
         super(relumodel, self).__init__()
         self.layers = nn.Sequential(
