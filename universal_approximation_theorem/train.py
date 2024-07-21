@@ -44,7 +44,7 @@ plt.plot(losses)
 plt.show()
 
 x_test = torch.tensor(np.arange(-50, 50, 0.01), dtype=torch.float32).view(-1, 1)
-y_test = model(x_test).detach().numpy()
+y_test = model(x_test).detach().numpy() 
 
 plt.plot(x_test, y_test)
 plt.scatter(x_train, y_train)
