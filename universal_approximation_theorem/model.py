@@ -2,17 +2,21 @@ import torch
 import torch.nn as nn
 
 
-class relumodel(nn.Module):                                    
+class approximator(nn.Module):
     def __init__(self):
-        super(relumodel, self).__init__()
+        super(approximator, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(1, 20),
-            nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.ReLU(),
-            nn.Linear(20, 1),
+            nn.Linear(1, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 256),
+            nn.LeakyReLU(),
+            nn.Linear(256, 1)
         )
         
     
